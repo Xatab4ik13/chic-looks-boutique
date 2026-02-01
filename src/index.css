@@ -10,7 +10,7 @@
 
 @layer base {
   :root {
-    /* Main Pantone Colors - More saturated */
+    /* Main Pantone Colors */
     --dew: 25 35% 85%;
     --angel-wing: 12 50% 88%;
     --buttercream: 40 40% 86%;
@@ -19,23 +19,23 @@
     /* Angel Wing as Primary Accent */
     --rose-blush: 12 50% 82%;
     
-    /* Semantic Colors - Using warm Pantone tones */
-    --background: 25 35% 85%;
+    /* Semantic Colors - White base with Pantone accents */
+    --background: 0 0% 100%;
     --foreground: 30 20% 12%;
 
-    --card: 40 40% 88%;
+    --card: 0 0% 100%;
     --card-foreground: 30 20% 12%;
 
-    --popover: 45 25% 90%;
+    --popover: 0 0% 100%;
     --popover-foreground: 30 20% 12%;
 
     --primary: 12 50% 88%;
     --primary-foreground: 30 20% 12%;
 
-    --secondary: 40 40% 86%;
+    --secondary: 25 35% 85%;
     --secondary-foreground: 30 20% 12%;
 
-    --muted: 45 25% 88%;
+    --muted: 40 40% 86%;
     --muted-foreground: 30 15% 40%;
 
     --accent: 12 50% 82%;
@@ -44,8 +44,8 @@
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 25 30% 80%;
-    --input: 25 30% 80%;
+    --border: 25 25% 88%;
+    --input: 25 25% 88%;
     --ring: 12 50% 70%;
 
     --radius: 0rem;
@@ -68,13 +68,13 @@
     --shadow-hover: 0 20px 40px -8px hsl(var(--brand-dark) / 0.15);
     
     /* Sidebar */
-    --sidebar-background: 25 35% 85%;
+    --sidebar-background: 0 0% 100%;
     --sidebar-foreground: 30 20% 12%;
     --sidebar-primary: 12 50% 88%;
     --sidebar-primary-foreground: 30 20% 12%;
-    --sidebar-accent: 45 25% 88%;
+    --sidebar-accent: 25 35% 85%;
     --sidebar-accent-foreground: 30 20% 12%;
-    --sidebar-border: 25 30% 80%;
+    --sidebar-border: 25 25% 88%;
     --sidebar-ring: 12 50% 70%;
   }
 

@@ -4,6 +4,38 @@ import dressBurgundy from "@/assets/products/dress-burgundy.jpg";
 import corsetGold from "@/assets/products/corset-gold.jpg";
 import dressRed from "@/assets/products/dress-red.jpg";
 
+// New product images
+import dressMini1 from "@/assets/products/dress-mini-1.jpg";
+import dressMini2 from "@/assets/products/dress-mini-2.jpg";
+import dressMini3 from "@/assets/products/dress-mini-3.jpg";
+import dressMidi1 from "@/assets/products/dress-midi-1.jpg";
+import dressMidi2 from "@/assets/products/dress-midi-2.jpg";
+import dressMidi3 from "@/assets/products/dress-midi-3.jpg";
+import dressMaxi1 from "@/assets/products/dress-maxi-1.jpg";
+import dressMaxi2 from "@/assets/products/dress-maxi-2.jpg";
+import dressMaxi3 from "@/assets/products/dress-maxi-3.jpg";
+import corset1 from "@/assets/products/corset-1.jpg";
+import corset2 from "@/assets/products/corset-2.jpg";
+import corset3 from "@/assets/products/corset-3.jpg";
+import skirt1 from "@/assets/products/skirt-1.jpg";
+import skirt2 from "@/assets/products/skirt-2.jpg";
+import skirt3 from "@/assets/products/skirt-3.jpg";
+import pants1 from "@/assets/products/pants-1.jpg";
+import pants2 from "@/assets/products/pants-2.jpg";
+import pants3 from "@/assets/products/pants-3.jpg";
+import jacket1 from "@/assets/products/jacket-1.jpg";
+import jacket2 from "@/assets/products/jacket-2.jpg";
+import jacket3 from "@/assets/products/jacket-3.jpg";
+import blouse1 from "@/assets/products/blouse-1.jpg";
+import blouse2 from "@/assets/products/blouse-2.jpg";
+import blouse3 from "@/assets/products/blouse-3.jpg";
+import suit1 from "@/assets/products/suit-1.jpg";
+import suit2 from "@/assets/products/suit-2.jpg";
+import suit3 from "@/assets/products/suit-3.jpg";
+import accessory1 from "@/assets/products/accessory-1.jpg";
+import accessory2 from "@/assets/products/accessory-2.jpg";
+import accessory3 from "@/assets/products/accessory-3.jpg";
+
 export const categories: Category[] = [
   {
     id: "1",
@@ -27,89 +59,294 @@ export const categories: Category[] = [
     id: "3",
     name: "Юбки",
     slug: "skirts",
-    image: dressBurgundy,
+    image: skirt1,
   },
   {
     id: "4",
     name: "Шорты и брюки",
     slug: "pants",
-    image: dressRed,
+    image: pants1,
   },
   {
     id: "5",
     name: "Пиджаки и жакеты",
     slug: "jackets",
-    image: corsetGold,
+    image: jacket1,
   },
   {
     id: "6",
     name: "Блузы и сорочки",
     slug: "blouses",
-    image: dressBurgundy,
+    image: blouse1,
   },
   {
     id: "7",
     name: "Костюмы",
     slug: "suits",
-    image: dressRed,
+    image: suit3,
   },
   {
     id: "8",
     name: "Аксессуары",
     slug: "accessories",
-    image: corsetGold,
+    image: accessory1,
   },
 ];
 
 export const products: Product[] = [
+  // Dresses - Mini
   {
     id: "1",
-    name: "Платье с воланами бордо",
+    name: "Платье мини бордо с воланами",
     price: 18500,
-    image: dressBurgundy,
+    image: dressMini1,
     category: "dresses",
     subcategory: "mini",
     isNew: true,
   },
   {
     id: "2",
-    name: "Корсет золотой с рукавами",
-    price: 14200,
-    oldPrice: 16800,
-    image: corsetGold,
-    category: "corsets",
-    isSale: true,
+    name: "Платье мини чёрное атласное",
+    price: 16200,
+    image: dressMini2,
+    category: "dresses",
+    subcategory: "mini",
   },
   {
     id: "3",
-    name: "Костюм красный атласный",
-    price: 28900,
-    image: dressRed,
-    category: "suits",
+    name: "Платье мини изумруд",
+    price: 17800,
+    oldPrice: 21500,
+    image: dressMini3,
+    category: "dresses",
+    subcategory: "mini",
+    isSale: true,
+  },
+  // Dresses - Midi
+  {
+    id: "4",
+    name: "Платье миди шампань",
+    price: 22500,
+    image: dressMidi1,
+    category: "dresses",
+    subcategory: "midi",
     isNew: true,
   },
   {
-    id: "4",
-    name: "Платье вечернее бордо",
-    price: 22500,
-    image: dressBurgundy,
+    id: "5",
+    name: "Платье миди синий атлас",
+    price: 24800,
+    image: dressMidi2,
     category: "dresses",
     subcategory: "midi",
   },
   {
-    id: "5",
-    name: "Топ корсетный золотой",
-    price: 12800,
-    image: corsetGold,
+    id: "6",
+    name: "Платье миди пудра драпировка",
+    price: 21900,
+    image: dressMidi3,
+    category: "dresses",
+    subcategory: "midi",
+  },
+  // Dresses - Maxi
+  {
+    id: "7",
+    name: "Платье макси чёрное вечернее",
+    price: 32500,
+    image: dressMaxi1,
+    category: "dresses",
+    subcategory: "maxi",
+    isNew: true,
+  },
+  {
+    id: "8",
+    name: "Платье макси изумруд шёлк",
+    price: 35800,
+    image: dressMaxi2,
+    category: "dresses",
+    subcategory: "maxi",
+  },
+  {
+    id: "9",
+    name: "Платье макси бордо русалка",
+    price: 38900,
+    oldPrice: 45000,
+    image: dressMaxi3,
+    category: "dresses",
+    subcategory: "maxi",
+    isSale: true,
+  },
+  // Corsets
+  {
+    id: "10",
+    name: "Корсет чёрный классика",
+    price: 14200,
+    image: corset1,
+    category: "corsets",
+    isNew: true,
+  },
+  {
+    id: "11",
+    name: "Корсет белый кружево",
+    price: 15800,
+    image: corset2,
     category: "corsets",
   },
   {
-    id: "6",
-    name: "Жакет красный шёлк",
-    price: 19900,
-    oldPrice: 24500,
-    image: dressRed,
+    id: "12",
+    name: "Корсет бордо бархат",
+    price: 16500,
+    oldPrice: 19800,
+    image: corset3,
+    category: "corsets",
+    isSale: true,
+  },
+  // Skirts
+  {
+    id: "13",
+    name: "Юбка чёрная атласная макси",
+    price: 12800,
+    image: skirt1,
+    category: "skirts",
+    isNew: true,
+  },
+  {
+    id: "14",
+    name: "Юбка золотая плиссе",
+    price: 14500,
+    image: skirt2,
+    category: "skirts",
+  },
+  {
+    id: "15",
+    name: "Юбка изумруд шёлк",
+    price: 13900,
+    oldPrice: 16500,
+    image: skirt3,
+    category: "skirts",
+    isSale: true,
+  },
+  // Pants
+  {
+    id: "16",
+    name: "Брюки палаццо чёрные",
+    price: 15200,
+    image: pants1,
+    category: "pants",
+    isNew: true,
+  },
+  {
+    id: "17",
+    name: "Шорты золотой атлас",
+    price: 9800,
+    image: pants2,
+    category: "pants",
+  },
+  {
+    id: "18",
+    name: "Костюм бордо брючный",
+    price: 28900,
+    image: pants3,
+    category: "pants",
+  },
+  // Jackets
+  {
+    id: "19",
+    name: "Пиджак чёрный оверсайз",
+    price: 24500,
+    image: jacket1,
     category: "jackets",
+    isNew: true,
+  },
+  {
+    id: "20",
+    name: "Жакет кремовый укороченный",
+    price: 21800,
+    image: jacket2,
+    category: "jackets",
+  },
+  {
+    id: "21",
+    name: "Пиджак бордо бархат",
+    price: 26900,
+    oldPrice: 32000,
+    image: jacket3,
+    category: "jackets",
+    isSale: true,
+  },
+  // Blouses
+  {
+    id: "22",
+    name: "Блуза белая шёлк",
+    price: 11500,
+    image: blouse1,
+    category: "blouses",
+    isNew: true,
+  },
+  {
+    id: "23",
+    name: "Блуза чёрная с бантом",
+    price: 12800,
+    image: blouse2,
+    category: "blouses",
+  },
+  {
+    id: "24",
+    name: "Блуза розовая органза",
+    price: 13200,
+    oldPrice: 15800,
+    image: blouse3,
+    category: "blouses",
+    isSale: true,
+  },
+  // Suits
+  {
+    id: "25",
+    name: "Костюм чёрный классика",
+    price: 42500,
+    image: suit1,
+    category: "suits",
+    isNew: true,
+  },
+  {
+    id: "26",
+    name: "Костюм кремовый лён",
+    price: 38900,
+    image: suit2,
+    category: "suits",
+  },
+  {
+    id: "27",
+    name: "Костюм бордо бархат",
+    price: 45800,
+    oldPrice: 52000,
+    image: suit3,
+    category: "suits",
+    isSale: true,
+  },
+  // Accessories
+  {
+    id: "28",
+    name: "Серьги золотые солнце",
+    price: 4500,
+    image: accessory1,
+    category: "accessories",
+    isNew: true,
+  },
+  {
+    id: "29",
+    name: "Клатч чёрный кожа",
+    price: 8900,
+    image: accessory2,
+    category: "accessories",
+  },
+  {
+    id: "30",
+    name: "Платок шёлковый",
+    price: 5200,
+    oldPrice: 6800,
+    image: accessory3,
+    category: "accessories",
     isSale: true,
   },
 ];

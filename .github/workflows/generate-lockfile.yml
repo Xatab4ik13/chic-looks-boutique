@@ -4,8 +4,10 @@ on:
   push:
     branches:
       - main
-    paths:
-      - 'package.json'
+  workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   generate-lockfile:
@@ -21,12 +23,14 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-      
-      - name: Remove bun.lockb if exists
-        run: rm -f bun.lockb
+
+      - name: Remove existing lockfiles
+        run: |
+          rm -f package-lock.json
+          rm -f bun.lockb
       
       - name: Generate package-lock.json
-        run: npm install --package-lock-only
+        run: npm install --package-lock-only --ignore-scripts
       
       - name: Check for changes
         id: changes

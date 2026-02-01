@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useMemo } from "react";
 import { useParams } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { SlidersHorizontal, X, ChevronDown } from "lucide-react";
@@ -7,23 +7,25 @@ import CartDrawer from "@/components/CartDrawer";
 import ProductCard from "@/components/ProductCard";
 import Footer from "@/components/Footer";
 import { products, categories } from "@/data/products";
+import { useState } from "react";
 
 const Catalog = () => {
   const { category: categorySlug, subcategory } = useParams();
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [sortBy, setSortBy] = useState("new");
-  const [activeCategory, setActiveCategory] = useState(categorySlug || "all");
 
   const currentCategory = categories.find((c) => c.slug === categorySlug);
 
   const filteredProducts = useMemo(() => {
     let filtered = [...products];
 
-    if (activeCategory !== "all") {
-      filtered = filtered.filter((p) => p.category === activeCategory);
+    // Filter by category from URL
+    if (categorySlug) {
+      filtered = filtered.filter((p) => p.category === categorySlug);
     }
 
-    if (subcategory) {
+    // Filter by subcategory from URL
+    if (subcategory && subcategory !== "all") {
       filtered = filtered.filter((p) => p.subcategory === subcategory);
     }
 
@@ -41,7 +43,7 @@ const Catalog = () => {
     }
 
     return filtered;
-  }, [activeCategory, subcategory, sortBy]);
+  }, [categorySlug, subcategory, sortBy]);
 
   return (
     <div className="min-h-screen">
@@ -174,47 +176,40 @@ const Catalog = () => {
                 <div className="mb-8">
                   <h3 className="font-serif text-lg mb-4">Категории</h3>
                   <div className="space-y-2">
-                    <button
-                      onClick={() => setActiveCategory("all")}
-                      className={`block w-full text-left py-2 text-sm transition-colors ${
-                        activeCategory === "all"
-                          ? "text-foreground"
-                          : "text-muted-foreground hover:text-foreground"
-                      }`}
-                    >
-                      Все товары
-                    </button>
                     {categories.map((cat) => (
-                      <button
+                      <a
                         key={cat.id}
-                        onClick={() => setActiveCategory(cat.slug)}
+                        href={`/catalog/${cat.slug}`}
                         className={`block w-full text-left py-2 text-sm transition-colors ${
-                          activeCategory === cat.slug
-                            ? "text-foreground"
+                          categorySlug === cat.slug
+                            ? "text-foreground font-medium"
                             : "text-muted-foreground hover:text-foreground"
                         }`}
                       >
                         {cat.name}
-                      </button>
+                      </a>
                     ))}
                   </div>
                 </div>
 
-                {/* Subcategories for dresses */}
-                {activeCategory === "dresses" && (
+                {/* Subcategories for current category */}
+                {currentCategory?.subcategories && (
                   <div className="mb-8">
-                    <h3 className="font-serif text-lg mb-4">Длина</h3>
+                    <h3 className="font-serif text-lg mb-4">Подкатегории</h3>
                     <div className="space-y-2">
-                      {categories
-                        .find((c) => c.slug === "dresses")
-                        ?.subcategories?.map((sub) => (
-                          <button
-                            key={sub.id}
-                            className="block w-full text-left py-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
-                          >
-                            {sub.name}
-                          </button>
-                        ))}
+                      {currentCategory.subcategories.map((sub) => (
+                        <a
+                          key={sub.id}
+                          href={`/catalog/${categorySlug}/${sub.slug}`}
+                          className={`block w-full text-left py-2 text-sm transition-colors ${
+                            subcategory === sub.slug
+                              ? "text-foreground font-medium"
+                              : "text-muted-foreground hover:text-foreground"
+                          }`}
+                        >
+                          {sub.name}
+                        </a>
+                      ))}
                     </div>
                   </div>
                 )}

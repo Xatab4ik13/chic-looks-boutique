@@ -35,8 +35,8 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Categories Grid */}
-      <section className="py-20 md:py-32">
+      {/* Categories Grid - Dew background */}
+      <section className="py-20 md:py-32 bg-secondary">
         <div className="container mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -124,8 +124,8 @@ const Index = () => {
         </div>
       </section>
 
-      {/* New Arrivals */}
-      <section className="py-20 md:py-32">
+      {/* New Arrivals - White background */}
+      <section className="py-20 md:py-32 bg-background">
         <div className="container mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -159,8 +159,8 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Brand Story */}
-      <section className="py-20 md:py-32 bg-primary/30">
+      {/* Brand Story - Muted/Buttercream background */}
+      <section className="py-20 md:py-32 bg-muted">
         <div className="container mx-auto">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <motion.div
@@ -217,8 +217,8 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Instagram / Social */}
-      <section className="py-20 md:py-32">
+      {/* Instagram / Social - White background */}
+      <section className="py-20 md:py-32 bg-background">
         <div className="container mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 30 }}

@@ -10,51 +10,51 @@
 
 @layer base {
   :root {
-    /* Main Pantone Colors */
-    --dew: 25 30% 87%;
-    --angel-wing: 12 45% 90%;
-    --buttercream: 40 35% 89%;
-    --jet-stream: 45 20% 91%;
+    /* Main Pantone Colors - More saturated */
+    --dew: 25 35% 85%;
+    --angel-wing: 12 50% 88%;
+    --buttercream: 40 40% 86%;
+    --jet-stream: 45 25% 88%;
     
     /* Angel Wing as Primary Accent */
-    --rose-blush: 12 45% 85%;
+    --rose-blush: 12 50% 82%;
     
-    /* Semantic Colors */
-    --background: 12 40% 97%;
-    --foreground: 30 15% 12%;
+    /* Semantic Colors - Using warm Pantone tones */
+    --background: 25 35% 85%;
+    --foreground: 30 20% 12%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 30 15% 12%;
+    --card: 40 40% 88%;
+    --card-foreground: 30 20% 12%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 30 15% 12%;
+    --popover: 45 25% 90%;
+    --popover-foreground: 30 20% 12%;
 
-    --primary: 12 45% 90%;
-    --primary-foreground: 30 15% 12%;
+    --primary: 12 50% 88%;
+    --primary-foreground: 30 20% 12%;
 
-    --secondary: 25 30% 87%;
-    --secondary-foreground: 30 15% 12%;
+    --secondary: 40 40% 86%;
+    --secondary-foreground: 30 20% 12%;
 
-    --muted: 45 20% 91%;
-    --muted-foreground: 30 10% 45%;
+    --muted: 45 25% 88%;
+    --muted-foreground: 30 15% 40%;
 
-    --accent: 12 45% 85%;
-    --accent-foreground: 30 15% 12%;
+    --accent: 12 50% 82%;
+    --accent-foreground: 30 20% 12%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 12 30% 88%;
-    --input: 12 30% 88%;
-    --ring: 12 45% 75%;
+    --border: 25 30% 80%;
+    --input: 25 30% 80%;
+    --ring: 12 50% 70%;
 
     --radius: 0rem;
 
     /* Custom Design Tokens */
-    --brand-dark: 30 15% 12%;
-    --brand-cream: 40 30% 96%;
-    --brand-warm: 25 30% 87%;
-    --brand-rose: 12 45% 90%;
+    --brand-dark: 30 20% 12%;
+    --brand-cream: 40 40% 86%;
+    --brand-warm: 25 35% 85%;
+    --brand-rose: 12 50% 88%;
     
     /* Gradients */
     --gradient-hero: linear-gradient(135deg, hsl(var(--angel-wing)) 0%, hsl(var(--dew)) 50%, hsl(var(--buttercream)) 100%);
@@ -63,19 +63,19 @@
     --gradient-rose: linear-gradient(135deg, hsl(var(--angel-wing)) 0%, hsl(var(--rose-blush)) 100%);
     
     /* Shadows */
-    --shadow-soft: 0 4px 20px -2px hsl(var(--brand-dark) / 0.06);
-    --shadow-card: 0 8px 30px -4px hsl(var(--brand-dark) / 0.08);
-    --shadow-hover: 0 20px 40px -8px hsl(var(--brand-dark) / 0.12);
+    --shadow-soft: 0 4px 20px -2px hsl(var(--brand-dark) / 0.08);
+    --shadow-card: 0 8px 30px -4px hsl(var(--brand-dark) / 0.1);
+    --shadow-hover: 0 20px 40px -8px hsl(var(--brand-dark) / 0.15);
     
     /* Sidebar */
-    --sidebar-background: 12 40% 97%;
-    --sidebar-foreground: 30 15% 12%;
-    --sidebar-primary: 12 45% 90%;
-    --sidebar-primary-foreground: 30 15% 12%;
-    --sidebar-accent: 45 20% 91%;
-    --sidebar-accent-foreground: 30 15% 12%;
-    --sidebar-border: 12 30% 88%;
-    --sidebar-ring: 12 45% 75%;
+    --sidebar-background: 25 35% 85%;
+    --sidebar-foreground: 30 20% 12%;
+    --sidebar-primary: 12 50% 88%;
+    --sidebar-primary-foreground: 30 20% 12%;
+    --sidebar-accent: 45 25% 88%;
+    --sidebar-accent-foreground: 30 20% 12%;
+    --sidebar-border: 25 30% 80%;
+    --sidebar-ring: 12 50% 70%;
   }
 
   .dark {

@@ -4,10 +4,11 @@ import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { MapPin, Package, ArrowLeft, Loader2 } from "lucide-react";
+import { Package, ArrowLeft, Loader2, Truck } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import CartDrawer from "@/components/CartDrawer";
+import CDEKWidget from "@/components/CDEKWidget";
 import { useCartStore } from "@/store/cartStore";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -21,61 +22,29 @@ const checkoutSchema = z.object({
 
 type CheckoutForm = z.infer<typeof checkoutSchema>;
 
-// Popular CDEK pickup points (simplified version)
-const cdekCities = [
-  { id: "msk", name: "Москва" },
-  { id: "spb", name: "Санкт-Петербург" },
-  { id: "nsk", name: "Новосибирск" },
-  { id: "ekb", name: "Екатеринбург" },
-  { id: "kzn", name: "Казань" },
-  { id: "nnov", name: "Нижний Новгород" },
-  { id: "sam", name: "Самара" },
-  { id: "rnd", name: "Ростов-на-Дону" },
-  { id: "krd", name: "Краснодар" },
-  { id: "vgd", name: "Волгоград" },
-];
-
-const cdekPoints: Record<string, Array<{ id: string; name: string; address: string }>> = {
-  msk: [
-    { id: "msk-1", name: "ПВЗ Тверская", address: "ул. Тверская, 12" },
-    { id: "msk-2", name: "ПВЗ Арбат", address: "ул. Арбат, 25" },
-    { id: "msk-3", name: "ПВЗ ВДНХ", address: "пр-т Мира, 150" },
-  ],
-  spb: [
-    { id: "spb-1", name: "ПВЗ Невский", address: "Невский пр-т, 100" },
-    { id: "spb-2", name: "ПВЗ Московский", address: "Московский пр-т, 50" },
-  ],
-  nsk: [
-    { id: "nsk-1", name: "ПВЗ Центр", address: "Красный пр-т, 30" },
-  ],
-  ekb: [
-    { id: "ekb-1", name: "ПВЗ Центр", address: "ул. Ленина, 40" },
-  ],
-  kzn: [
-    { id: "kzn-1", name: "ПВЗ Центр", address: "ул. Баумана, 15" },
-  ],
-  nnov: [
-    { id: "nnov-1", name: "ПВЗ Центр", address: "ул. Большая Покровская, 20" },
-  ],
-  sam: [
-    { id: "sam-1", name: "ПВЗ Центр", address: "ул. Куйбышева, 10" },
-  ],
-  rnd: [
-    { id: "rnd-1", name: "ПВЗ Центр", address: "ул. Большая Садовая, 50" },
-  ],
-  krd: [
-    { id: "krd-1", name: "ПВЗ Центр", address: "ул. Красная, 100" },
-  ],
-  vgd: [
-    { id: "vgd-1", name: "ПВЗ Центр", address: "пр-т Ленина, 25" },
-  ],
-};
+interface CDEKPoint {
+  code: string;
+  name: string;
+  location: {
+    city: string;
+    city_code: number;
+    address: string;
+    postal_code: string;
+    latitude: number;
+    longitude: number;
+  };
+  work_time: string;
+  phones?: { number: string }[];
+  type: string;
+  have_cash: boolean;
+  have_cashless: boolean;
+  is_dressing_room: boolean;
+}
 
 const Checkout = () => {
   const navigate = useNavigate();
   const { items, getTotalPrice, clearCart } = useCartStore();
-  const [selectedCity, setSelectedCity] = useState("");
-  const [selectedPoint, setSelectedPoint] = useState("");
+  const [selectedPoint, setSelectedPoint] = useState<CDEKPoint | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const {
@@ -96,29 +65,20 @@ const Checkout = () => {
     return new Intl.NumberFormat("ru-RU").format(price) + " ₽";
   };
 
-  const getSelectedPointInfo = () => {
-    if (!selectedCity || !selectedPoint) return null;
-    const points = cdekPoints[selectedCity] || [];
-    return points.find(p => p.id === selectedPoint);
-  };
-
   const onSubmit = async (data: CheckoutForm) => {
-    if (!selectedCity || !selectedPoint) {
+    if (!selectedPoint) {
       toast.error("Выберите пункт выдачи СДЭК");
       return;
     }
 
     setIsSubmitting(true);
 
-    const pointInfo = getSelectedPointInfo();
-    const cityName = cdekCities.find(c => c.id === selectedCity)?.name;
-
     const orderData = {
       name: data.name,
       phone: data.phone,
-      city: cityName,
-      pickupPoint: pointInfo?.name,
-      pickupAddress: pointInfo?.address,
+      city: selectedPoint.location.city,
+      pickupPoint: selectedPoint.name,
+      pickupAddress: selectedPoint.location.address,
       items: items.map(item => ({
         name: item.name,
         size: item.size,
@@ -223,72 +183,16 @@ const Checkout = () => {
                   </div>
                 </div>
 
-                {/* CDEK Points */}
+                {/* CDEK Widget */}
                 <div className="bg-secondary/30 p-6 rounded-lg">
                   <h2 className="font-serif text-xl mb-6 flex items-center gap-2">
-                    <MapPin className="w-5 h-5" />
-                    Пункт выдачи СДЭК
+                    <Truck className="w-5 h-5" />
+                    Доставка СДЭК
                   </h2>
-                  <div className="space-y-4">
-                    <div>
-                      <Label className="text-sm font-medium mb-2 block">
-                        Город *
-                      </Label>
-                      <select
-                        value={selectedCity}
-                        onChange={(e) => {
-                          setSelectedCity(e.target.value);
-                          setSelectedPoint("");
-                        }}
-                        className="w-full h-10 px-3 py-2 bg-background border border-border rounded-md text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
-                      >
-                        <option value="">Выберите город</option>
-                        {cdekCities.map((city) => (
-                          <option key={city.id} value={city.id}>
-                            {city.name}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-
-                    {selectedCity && (
-                      <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: "auto" }}
-                      >
-                        <Label className="text-sm font-medium mb-2 block">
-                          Пункт выдачи *
-                        </Label>
-                        <div className="space-y-2">
-                          {cdekPoints[selectedCity]?.map((point) => (
-                            <label
-                              key={point.id}
-                              className={`flex items-start gap-3 p-4 rounded-lg cursor-pointer transition-all ${
-                                selectedPoint === point.id
-                                  ? "bg-accent/50 border-2 border-accent"
-                                  : "bg-background border border-border hover:border-muted-foreground"
-                              }`}
-                            >
-                              <input
-                                type="radio"
-                                name="cdekPoint"
-                                value={point.id}
-                                checked={selectedPoint === point.id}
-                                onChange={(e) => setSelectedPoint(e.target.value)}
-                                className="mt-1"
-                              />
-                              <div>
-                                <p className="font-medium">{point.name}</p>
-                                <p className="text-sm text-muted-foreground">
-                                  {point.address}
-                                </p>
-                              </div>
-                            </label>
-                          ))}
-                        </div>
-                      </motion.div>
-                    )}
-                  </div>
+                  <CDEKWidget
+                    onSelect={setSelectedPoint}
+                    selectedPoint={selectedPoint}
+                  />
                 </div>
               </div>
 

@@ -97,6 +97,7 @@ export const products: Product[] = [
   // Dresses - Mini
   {
     id: "1",
+    sku: "VOX-DR-001",
     name: "Платье мини бордо с воланами",
     price: 18500,
     image: dressMini1,
@@ -106,6 +107,7 @@ export const products: Product[] = [
   },
   {
     id: "2",
+    sku: "VOX-DR-002",
     name: "Платье мини чёрное атласное",
     price: 16200,
     image: dressMini2,
@@ -114,6 +116,7 @@ export const products: Product[] = [
   },
   {
     id: "3",
+    sku: "VOX-DR-003",
     name: "Платье мини изумруд",
     price: 17800,
     oldPrice: 21500,
@@ -125,6 +128,7 @@ export const products: Product[] = [
   // Dresses - Midi
   {
     id: "4",
+    sku: "VOX-DR-004",
     name: "Платье миди шампань",
     price: 22500,
     image: dressMidi1,
@@ -134,6 +138,7 @@ export const products: Product[] = [
   },
   {
     id: "5",
+    sku: "VOX-DR-005",
     name: "Платье миди синий атлас",
     price: 24800,
     image: dressMidi2,
@@ -142,6 +147,7 @@ export const products: Product[] = [
   },
   {
     id: "6",
+    sku: "VOX-DR-006",
     name: "Платье миди пудра драпировка",
     price: 21900,
     image: dressMidi3,
@@ -151,6 +157,7 @@ export const products: Product[] = [
   // Dresses - Maxi
   {
     id: "7",
+    sku: "VOX-DR-007",
     name: "Платье макси чёрное вечернее",
     price: 32500,
     image: dressMaxi1,
@@ -160,6 +167,7 @@ export const products: Product[] = [
   },
   {
     id: "8",
+    sku: "VOX-DR-008",
     name: "Платье макси изумруд шёлк",
     price: 35800,
     image: dressMaxi2,
@@ -168,6 +176,7 @@ export const products: Product[] = [
   },
   {
     id: "9",
+    sku: "VOX-DR-009",
     name: "Платье макси бордо русалка",
     price: 38900,
     oldPrice: 45000,
@@ -179,6 +188,7 @@ export const products: Product[] = [
   // Corsets
   {
     id: "10",
+    sku: "VOX-CR-001",
     name: "Корсет чёрный классика",
     price: 14200,
     image: corset1,
@@ -187,6 +197,7 @@ export const products: Product[] = [
   },
   {
     id: "11",
+    sku: "VOX-CR-002",
     name: "Корсет белый кружево",
     price: 15800,
     image: corset2,
@@ -194,6 +205,7 @@ export const products: Product[] = [
   },
   {
     id: "12",
+    sku: "VOX-CR-003",
     name: "Корсет бордо бархат",
     price: 16500,
     oldPrice: 19800,
@@ -204,6 +216,7 @@ export const products: Product[] = [
   // Skirts
   {
     id: "13",
+    sku: "VOX-SK-001",
     name: "Юбка чёрная атласная макси",
     price: 12800,
     image: skirt1,
@@ -212,6 +225,7 @@ export const products: Product[] = [
   },
   {
     id: "14",
+    sku: "VOX-SK-002",
     name: "Юбка золотая плиссе",
     price: 14500,
     image: skirt2,
@@ -219,6 +233,7 @@ export const products: Product[] = [
   },
   {
     id: "15",
+    sku: "VOX-SK-003",
     name: "Юбка изумруд шёлк",
     price: 13900,
     oldPrice: 16500,
@@ -229,6 +244,7 @@ export const products: Product[] = [
   // Pants
   {
     id: "16",
+    sku: "VOX-PT-001",
     name: "Брюки палаццо чёрные",
     price: 15200,
     image: pants1,
@@ -237,6 +253,7 @@ export const products: Product[] = [
   },
   {
     id: "17",
+    sku: "VOX-PT-002",
     name: "Шорты золотой атлас",
     price: 9800,
     image: pants2,
@@ -244,6 +261,7 @@ export const products: Product[] = [
   },
   {
     id: "18",
+    sku: "VOX-PT-003",
     name: "Костюм бордо брючный",
     price: 28900,
     image: pants3,
@@ -252,6 +270,7 @@ export const products: Product[] = [
   // Jackets
   {
     id: "19",
+    sku: "VOX-JK-001",
     name: "Пиджак чёрный оверсайз",
     price: 24500,
     image: jacket1,
@@ -260,6 +279,7 @@ export const products: Product[] = [
   },
   {
     id: "20",
+    sku: "VOX-JK-002",
     name: "Жакет кремовый укороченный",
     price: 21800,
     image: jacket2,
@@ -267,6 +287,7 @@ export const products: Product[] = [
   },
   {
     id: "21",
+    sku: "VOX-JK-003",
     name: "Пиджак бордо бархат",
     price: 26900,
     oldPrice: 32000,
@@ -277,6 +298,7 @@ export const products: Product[] = [
   // Blouses
   {
     id: "22",
+    sku: "VOX-BL-001",
     name: "Блуза белая шёлк",
     price: 11500,
     image: blouse1,
@@ -285,6 +307,7 @@ export const products: Product[] = [
   },
   {
     id: "23",
+    sku: "VOX-BL-002",
     name: "Блуза чёрная с бантом",
     price: 12800,
     image: blouse2,
@@ -292,6 +315,7 @@ export const products: Product[] = [
   },
   {
     id: "24",
+    sku: "VOX-BL-003",
     name: "Блуза розовая органза",
     price: 13200,
     oldPrice: 15800,
@@ -302,6 +326,7 @@ export const products: Product[] = [
   // Suits
   {
     id: "25",
+    sku: "VOX-ST-001",
     name: "Костюм чёрный классика",
     price: 42500,
     image: suit1,
@@ -310,6 +335,7 @@ export const products: Product[] = [
   },
   {
     id: "26",
+    sku: "VOX-ST-002",
     name: "Костюм кремовый лён",
     price: 38900,
     image: suit2,
@@ -317,6 +343,7 @@ export const products: Product[] = [
   },
   {
     id: "27",
+    sku: "VOX-ST-003",
     name: "Костюм бордо бархат",
     price: 45800,
     oldPrice: 52000,
@@ -327,6 +354,7 @@ export const products: Product[] = [
   // Accessories
   {
     id: "28",
+    sku: "VOX-AC-001",
     name: "Серьги золотые солнце",
     price: 4500,
     image: accessory1,
@@ -335,6 +363,7 @@ export const products: Product[] = [
   },
   {
     id: "29",
+    sku: "VOX-AC-002",
     name: "Клатч чёрный кожа",
     price: 8900,
     image: accessory2,
@@ -342,6 +371,7 @@ export const products: Product[] = [
   },
   {
     id: "30",
+    sku: "VOX-AC-003",
     name: "Платок шёлковый",
     price: 5200,
     oldPrice: 6800,

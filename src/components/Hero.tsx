@@ -125,7 +125,7 @@ const Hero = () => {
           </motion.div>
 
           {/* Main Title with character animation */}
-          <div className="overflow-hidden mb-8 whitespace-nowrap">
+          <div className="mb-8">
             <motion.h1 key={`title-${currentSlide}`} className="font-serif text-5xl md:text-7xl lg:text-8xl leading-none">
               {titleChars.map((char, index) => <motion.span key={index} className="inline-block" initial={{
               y: 120,

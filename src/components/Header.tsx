@@ -98,20 +98,20 @@ const Header = () => {
         </div>
       </header>
 
-      {/* Mobile Menu - Pure CSS */}
+      {/* Mobile Menu - Elegant CSS Animation */}
       <div
-        className={`fixed inset-0 bg-foreground/20 z-50 transition-opacity duration-200 ${
-          isMenuOpen ? "opacity-100 visible" : "opacity-0 invisible"
+        className={`fixed inset-0 bg-foreground/30 z-50 transition-opacity duration-500 ease-out ${
+          isMenuOpen ? "opacity-100 visible" : "opacity-0 invisible pointer-events-none"
         }`}
         onClick={() => setIsMenuOpen(false)}
       />
       <nav
-        className={`fixed top-0 left-0 bottom-0 w-full max-w-md bg-background z-50 overflow-y-auto transition-transform duration-300 ease-out ${
-          isMenuOpen ? "translate-x-0" : "-translate-x-full"
+        className={`fixed top-0 left-0 bottom-0 w-full max-w-md bg-background z-50 overflow-y-auto menu-panel ${
+          isMenuOpen ? "menu-open" : ""
         }`}
       >
         <div className="p-8">
-          <div className="flex items-center justify-between mb-16">
+          <div className={`flex items-center justify-between mb-16 menu-item ${isMenuOpen ? "menu-item-visible" : ""}`} style={{ transitionDelay: "100ms" }}>
             <h2 className="font-serif text-2xl tracking-[0.25em]">VOX</h2>
             <button
               onClick={() => setIsMenuOpen(false)}
@@ -122,8 +122,12 @@ const Header = () => {
           </div>
 
           <div className="space-y-0">
-            {categories.map((category) => (
-              <div key={category.id}>
+            {categories.map((category, index) => (
+              <div 
+                key={category.id} 
+                className={`menu-item ${isMenuOpen ? "menu-item-visible" : ""}`}
+                style={{ transitionDelay: `${150 + index * 50}ms` }}
+              >
                 <Link
                   to={`/catalog/${category.slug}`}
                   onClick={() => setIsMenuOpen(false)}
@@ -154,7 +158,10 @@ const Header = () => {
             ))}
           </div>
 
-          <div className="mt-16 pt-8 border-t border-border">
+          <div 
+            className={`mt-16 pt-8 border-t border-border menu-item ${isMenuOpen ? "menu-item-visible" : ""}`}
+            style={{ transitionDelay: "500ms" }}
+          >
             <div className="space-y-4 text-sm text-muted-foreground">
               <p className="tracking-widest uppercase">Telegram</p>
               <p className="text-foreground">@vox_alisalanskaja</p>

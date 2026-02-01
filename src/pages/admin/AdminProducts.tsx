@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   Plus, 
@@ -10,7 +10,9 @@ import {
   X,
   Check,
   AlertCircle,
-  Sparkles
+  Sparkles,
+  Upload,
+  Image as ImageIcon
 } from "lucide-react";
 import { useAdminProductStore, categories, skuPrefixes } from "@/store/adminProductStore";
 import { Product } from "@/types/product";
@@ -43,6 +45,146 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
+
+// Image Upload Component
+const ImageUploadField = ({ 
+  value, 
+  onChange, 
+  id 
+}: { 
+  value: string; 
+  onChange: (image: string) => void; 
+  id: string;
+}) => {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isDragging, setIsDragging] = useState(false);
+
+  const handleFileChange = (file: File | null) => {
+    if (!file) return;
+    
+    if (!file.type.startsWith('image/')) {
+      toast.error("Выберите файл изображения");
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("Размер файла не должен превышать 5MB");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const result = e.target?.result as string;
+      onChange(result);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+    const file = e.dataTransfer.files[0];
+    handleFileChange(file);
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = () => {
+    setIsDragging(false);
+  };
+
+  return (
+    <div className="space-y-2">
+      <Label htmlFor={id}>Изображение</Label>
+      
+      {/* Preview */}
+      {value && (
+        <div className="relative w-full aspect-[3/4] max-w-[200px] rounded-lg overflow-hidden border border-border bg-muted">
+          <img
+            src={value}
+            alt="Preview"
+            className="w-full h-full object-cover"
+          />
+          <button
+            type="button"
+            onClick={() => onChange("")}
+            className="absolute top-2 right-2 p-1 rounded-full bg-background/80 hover:bg-background transition-colors"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+      )}
+
+      {/* Upload area */}
+      {!value && (
+        <div
+          onDrop={handleDrop}
+          onDragOver={handleDragOver}
+          onDragLeave={handleDragLeave}
+          onClick={() => fileInputRef.current?.click()}
+          className={`
+            relative border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-colors
+            ${isDragging 
+              ? 'border-primary bg-primary/5' 
+              : 'border-border hover:border-primary/50 hover:bg-muted/50'
+            }
+          `}
+        >
+          <div className="flex flex-col items-center gap-2">
+            <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center">
+              <Upload className="w-6 h-6 text-muted-foreground" />
+            </div>
+            <div>
+              <p className="font-medium text-sm">Загрузить изображение</p>
+              <p className="text-xs text-muted-foreground">
+                Перетащите или нажмите для выбора
+              </p>
+            </div>
+            <p className="text-xs text-muted-foreground">PNG, JPG до 5MB</p>
+          </div>
+        </div>
+      )}
+
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/*"
+        onChange={(e) => handleFileChange(e.target.files?.[0] || null)}
+        className="hidden"
+        id={id}
+      />
+
+      {/* URL input as fallback */}
+      <div className="flex items-center gap-2 mt-2">
+        <div className="flex-1 h-px bg-border" />
+        <span className="text-xs text-muted-foreground">или</span>
+        <div className="flex-1 h-px bg-border" />
+      </div>
+      
+      <div className="flex gap-2">
+        <Input
+          value={value.startsWith('data:') ? '' : value}
+          onChange={(e) => onChange(e.target.value)}
+          placeholder="Вставьте URL изображения"
+          className="flex-1"
+        />
+        {value && !value.startsWith('data:') && (
+          <Button
+            type="button"
+            variant="outline"
+            size="icon"
+            onClick={() => onChange("")}
+          >
+            <X className="w-4 h-4" />
+          </Button>
+        )}
+      </div>
+    </div>
+  );
+};
 
 const AdminProducts = () => {
   const { products, addProduct, deleteProduct, updateProduct, getNextSku } = useAdminProductStore();
@@ -474,16 +616,12 @@ const AdminProducts = () => {
               </div>
             </div>
 
-            {/* Image URL */}
-            <div className="space-y-2">
-              <Label htmlFor="image">URL изображения</Label>
-              <Input
-                id="image"
-                value={formData.image}
-                onChange={(e) => setFormData(prev => ({ ...prev, image: e.target.value }))}
-                placeholder="/placeholder.svg"
-              />
-            </div>
+            {/* Image Upload */}
+            <ImageUploadField
+              value={formData.image}
+              onChange={(image) => setFormData(prev => ({ ...prev, image }))}
+              id="image"
+            />
 
             {/* Tags */}
             <div className="flex items-center gap-6">
@@ -621,16 +759,12 @@ const AdminProducts = () => {
               </div>
             </div>
 
-            {/* Image URL */}
-            <div className="space-y-2">
-              <Label htmlFor="edit-image">URL изображения</Label>
-              <Input
-                id="edit-image"
-                value={formData.image}
-                onChange={(e) => setFormData(prev => ({ ...prev, image: e.target.value }))}
-                placeholder="/placeholder.svg"
-              />
-            </div>
+            {/* Image Upload */}
+            <ImageUploadField
+              value={formData.image}
+              onChange={(image) => setFormData(prev => ({ ...prev, image }))}
+              id="edit-image"
+            />
 
             {/* Tags */}
             <div className="flex items-center gap-6">

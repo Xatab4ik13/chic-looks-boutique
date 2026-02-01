@@ -88,27 +88,8 @@ const Footer = () => {
           ))}
         </div>
 
-        {/* Newsletter */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="border-t border-background/20 pt-12 mb-12"
-        >
-          <div className="max-w-md">
-            <h3 className="font-serif text-lg mb-4">Подпишитесь на новости</h3>
-            <div className="flex">
-              <input
-                type="email"
-                placeholder="Ваш email"
-                className="flex-1 bg-transparent border border-background/30 border-r-0 px-4 py-3 text-sm placeholder:text-background/40 focus:outline-none focus:border-background"
-              />
-              <button className="px-6 py-3 bg-background text-foreground text-sm tracking-wider uppercase hover:bg-background/90 transition-colors">
-                <AtSign className="w-4 h-4" />
-              </button>
-            </div>
-          </div>
-        </motion.div>
+        {/* Divider */}
+        <div className="border-t border-background/20 pt-12 mb-0" />
 
         {/* Copyright */}
         <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-background/40">

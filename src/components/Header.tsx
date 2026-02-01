@@ -137,6 +137,7 @@ const Header = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
               onClick={() => setIsMenuOpen(false)}
               className="fixed inset-0 bg-foreground/20 backdrop-blur-sm z-50"
             />
@@ -144,19 +145,14 @@ const Header = () => {
               initial={{ x: "-100%" }}
               animate={{ x: 0 }}
               exit={{ x: "-100%" }}
-              transition={{ type: "tween", duration: 0.5, ease: [0.43, 0.13, 0.23, 0.96] }}
+              transition={{ type: "tween", duration: 0.3, ease: "easeOut" }}
               className="fixed top-0 left-0 bottom-0 w-full max-w-md bg-background z-50 overflow-y-auto"
             >
               <div className="p-8">
                 <div className="flex items-center justify-between mb-16">
-                  <motion.h2
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.2 }}
-                    className="font-serif text-2xl tracking-[0.25em]"
-                  >
+                  <h2 className="font-serif text-2xl tracking-[0.25em]">
                     VOX
-                  </motion.h2>
+                  </h2>
                   <button
                     onClick={() => setIsMenuOpen(false)}
                     className="p-2 hover:opacity-70 transition-opacity"
@@ -166,13 +162,8 @@ const Header = () => {
                 </div>
 
                 <div className="space-y-0">
-                  {categories.map((category, index) => (
-                    <motion.div
-                      key={category.id}
-                      initial={{ opacity: 0, x: -30 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: 0.1 + index * 0.05 }}
-                    >
+                  {categories.map((category) => (
+                    <div key={category.id}>
                       <Link
                         to={`/catalog/${category.slug}`}
                         onClick={() => setIsMenuOpen(false)}
@@ -181,11 +172,9 @@ const Header = () => {
                         <span className="font-serif text-2xl group-hover:translate-x-2 transition-transform duration-300">
                           {category.name}
                         </span>
-                        <motion.span
-                          className="text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity"
-                        >
+                        <span className="text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity">
                           →
-                        </motion.span>
+                        </span>
                       </Link>
                       {category.subcategories && (
                         <div className="pl-4 py-3 space-y-2 border-b border-border">
@@ -201,21 +190,16 @@ const Header = () => {
                           ))}
                         </div>
                       )}
-                    </motion.div>
+                    </div>
                   ))}
                 </div>
 
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.5 }}
-                  className="mt-16 pt-8 border-t border-border"
-                >
+                <div className="mt-16 pt-8 border-t border-border">
                   <div className="space-y-4 text-sm text-muted-foreground">
                     <p className="tracking-widest uppercase">Telegram</p>
                     <p className="text-foreground">@vox_alisalanskaja</p>
                   </div>
-                </motion.div>
+                </div>
               </div>
             </motion.nav>
           </>

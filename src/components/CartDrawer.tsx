@@ -73,7 +73,13 @@ const CartDrawer = () => {
                   className="flex gap-4 p-4 bg-secondary/20 rounded-lg"
                 >
                   {/* Image */}
-                  <div className="w-24 h-32 flex-shrink-0 overflow-hidden rounded-md bg-muted">
+                  <div 
+                    onClick={() => {
+                      closeCart();
+                      navigate(`/product/${item.id}`);
+                    }}
+                    className="w-24 h-32 flex-shrink-0 overflow-hidden rounded-md bg-muted cursor-pointer hover:opacity-80 transition-opacity"
+                  >
                     <img
                       src={item.image}
                       alt={item.name}
@@ -84,7 +90,13 @@ const CartDrawer = () => {
                   {/* Details */}
                   <div className="flex-1 flex flex-col">
                     <div className="flex-1">
-                      <h3 className="font-serif text-lg leading-tight text-foreground">
+                      <h3 
+                        onClick={() => {
+                          closeCart();
+                          navigate(`/product/${item.id}`);
+                        }}
+                        className="font-serif text-lg leading-tight text-foreground cursor-pointer hover:text-primary transition-colors"
+                      >
                         {item.name}
                       </h3>
                       {item.size && (

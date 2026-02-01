@@ -11,6 +11,9 @@ import Delivery from "./pages/Delivery";
 import Returns from "./pages/Returns";
 import Checkout from "./pages/Checkout";
 import NotFound from "./pages/NotFound";
+import AdminLayout from "./pages/admin/AdminLayout";
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminProducts from "./pages/admin/AdminProducts";
 
 const queryClient = new QueryClient();
 
@@ -30,6 +33,11 @@ const App = () => (
           <Route path="/delivery" element={<Delivery />} />
           <Route path="/returns" element={<Returns />} />
           <Route path="/checkout" element={<Checkout />} />
+          {/* Admin Routes */}
+          <Route path="/admin" element={<AdminLayout />}>
+            <Route index element={<AdminDashboard />} />
+            <Route path="products" element={<AdminProducts />} />
+          </Route>
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

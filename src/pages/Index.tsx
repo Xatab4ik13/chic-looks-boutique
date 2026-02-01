@@ -233,7 +233,7 @@ const Index = () => {
           </motion.div>
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-            {products.map((product, index) => (
+            {products.slice(0, 8).map((product, index) => (
               <motion.div
                 key={product.id}
                 initial={{ opacity: 0, scale: 0.9 }}

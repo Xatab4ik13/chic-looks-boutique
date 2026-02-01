@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ShoppingBag, Heart } from "lucide-react";
 import { Product } from "@/types/product";
@@ -13,15 +14,20 @@ const ProductCard = ({ product, index = 0 }: ProductCardProps) => {
   const [isHovered, setIsHovered] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
   const { addItem, openCart } = useCartStore();
+  const navigate = useNavigate();
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat("ru-RU").format(price) + " ₽";
   };
 
   const handleAddToCart = (e: React.MouseEvent) => {
-    e.preventDefault();
+    e.stopPropagation();
     addItem(product);
     openCart();
+  };
+
+  const handleClick = () => {
+    navigate(`/product/${product.id}`);
   };
 
   return (
@@ -31,6 +37,7 @@ const ProductCard = ({ product, index = 0 }: ProductCardProps) => {
       transition={{ duration: 0.6, delay: index * 0.1 }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
+      onClick={handleClick}
       className="group cursor-pointer"
     >
       {/* Image Container */}
@@ -93,7 +100,7 @@ const ProductCard = ({ product, index = 0 }: ProductCardProps) => {
           </button>
           <button
             onClick={(e) => {
-              e.preventDefault();
+              e.stopPropagation();
               setIsLiked(!isLiked);
             }}
             className={`w-12 flex items-center justify-center bg-background/95 backdrop-blur-sm transition-colors ${

@@ -156,6 +156,42 @@ const Header = () => {
                 )}
               </div>
             ))}
+            
+            {/* Info Pages */}
+            <div 
+              className={`menu-item ${isMenuOpen ? "menu-item-visible" : ""}`}
+              style={{ transitionDelay: `${150 + categories.length * 50}ms` }}
+            >
+              <Link
+                to="/delivery"
+                onClick={() => setIsMenuOpen(false)}
+                className="group flex items-center justify-between py-5 border-b border-border"
+              >
+                <span className="font-serif text-2xl group-hover:translate-x-2 transition-transform duration-300">
+                  Доставка и Оплата
+                </span>
+                <span className="text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity">
+                  →
+                </span>
+              </Link>
+            </div>
+            <div 
+              className={`menu-item ${isMenuOpen ? "menu-item-visible" : ""}`}
+              style={{ transitionDelay: `${150 + (categories.length + 1) * 50}ms` }}
+            >
+              <Link
+                to="/returns"
+                onClick={() => setIsMenuOpen(false)}
+                className="group flex items-center justify-between py-5 border-b border-border"
+              >
+                <span className="font-serif text-2xl group-hover:translate-x-2 transition-transform duration-300">
+                  Обмен и Возврат
+                </span>
+                <span className="text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity">
+                  →
+                </span>
+              </Link>
+            </div>
           </div>
 
           <div 

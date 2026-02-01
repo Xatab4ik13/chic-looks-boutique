@@ -176,15 +176,17 @@ const ProductDetail = () => {
               transition={{ duration: 0.6, delay: 0.2 }}
               className="lg:py-8"
             >
-              {/* Category */}
-              <motion.p
+              {/* SKU & Category */}
+              <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 }}
-                className="text-muted-foreground text-sm tracking-widest uppercase mb-4"
+                className="flex items-center gap-3 text-muted-foreground text-sm tracking-widest uppercase mb-4"
               >
-                {product.category}
-              </motion.p>
+                <span>{product.sku}</span>
+                <span className="w-1 h-1 rounded-full bg-muted-foreground" />
+                <span>{product.category}</span>
+              </motion.div>
 
               {/* Title */}
               <motion.h1

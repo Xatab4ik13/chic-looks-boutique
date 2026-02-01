@@ -67,11 +67,6 @@ const ImageUploadField = ({
       return;
     }
 
-    if (file.size > 5 * 1024 * 1024) {
-      toast.error("Размер файла не должен превышать 5MB");
-      return;
-    }
-
     const reader = new FileReader();
     reader.onload = (e) => {
       const result = e.target?.result as string;
@@ -143,7 +138,7 @@ const ImageUploadField = ({
                 Перетащите или нажмите для выбора
               </p>
             </div>
-            <p className="text-xs text-muted-foreground">PNG, JPG до 5MB</p>
+            <p className="text-xs text-muted-foreground">PNG, JPG, WEBP</p>
           </div>
         </div>
       )}

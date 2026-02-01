@@ -1,14 +1,26 @@
-import { NavLink, Outlet, useNavigate } from "react-router-dom";
-import { Package, LayoutDashboard, ArrowLeft, Settings } from "lucide-react";
+import { NavLink, Outlet, useNavigate, Navigate } from "react-router-dom";
+import { Package, LayoutDashboard, ArrowLeft, Settings, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useAdminAuthStore } from "@/store/adminAuthStore";
 
 const AdminLayout = () => {
   const navigate = useNavigate();
+  const { isAuthenticated, logout } = useAdminAuthStore();
+
+  // Редирект на страницу входа если не авторизован
+  if (!isAuthenticated) {
+    return <Navigate to="/admin/login" replace />;
+  }
 
   const navItems = [
     { to: "/admin", icon: LayoutDashboard, label: "Обзор", end: true },
     { to: "/admin/products", icon: Package, label: "Товары" },
   ];
+
+  const handleLogout = () => {
+    logout();
+    navigate("/admin/login");
+  };
 
   return (
     <div className="min-h-screen bg-muted/30">
@@ -53,6 +65,17 @@ const AdminLayout = () => {
                   <span className="hidden sm:inline">{item.label}</span>
                 </NavLink>
               ))}
+              
+              {/* Logout Button */}
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleLogout}
+                className="ml-2 text-muted-foreground hover:text-foreground"
+              >
+                <LogOut className="w-4 h-4" />
+                <span className="hidden sm:inline ml-2">Выйти</span>
+              </Button>
             </div>
           </div>
         </div>

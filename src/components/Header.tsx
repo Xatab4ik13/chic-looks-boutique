@@ -198,10 +198,15 @@ const Header = () => {
             className={`mt-16 pt-8 border-t border-border menu-item ${isMenuOpen ? "menu-item-visible" : ""}`}
             style={{ transitionDelay: "500ms" }}
           >
-            <div className="space-y-4 text-sm text-muted-foreground">
-              <p className="tracking-widest uppercase">Telegram</p>
+            <a 
+              href="https://www.instagram.com/vox_alisalanskaja/" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="block space-y-4 text-sm text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <p className="tracking-widest uppercase">Instagram</p>
               <p className="text-foreground">@vox_alisalanskaja</p>
-            </div>
+            </a>
           </div>
         </div>
       </nav>

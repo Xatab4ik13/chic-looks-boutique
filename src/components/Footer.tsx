@@ -54,7 +54,9 @@ const Footer = () => {
                 <Send className="w-4 h-4" />
               </a>
               <a
-                href="#"
+                href="https://www.instagram.com/vox_alisalanskaja/"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="w-10 h-10 border border-background/30 flex items-center justify-center hover:bg-background hover:text-foreground transition-all duration-300"
               >
                 <Instagram className="w-4 h-4" />

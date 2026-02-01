@@ -7,7 +7,6 @@ import Hero from "@/components/Hero";
 import ProductCard from "@/components/ProductCard";
 import CategoryCard from "@/components/CategoryCard";
 import Footer from "@/components/Footer";
-import InstagramGallery from "@/components/InstagramGallery";
 import { products, categories } from "@/data/products";
 
 const Index = () => {
@@ -218,8 +217,41 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Instagram Gallery */}
-      <InstagramGallery />
+      {/* Instagram / Social - White background */}
+      <section className="py-20 md:py-32 bg-background">
+        <div className="container mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-12"
+          >
+            <p className="text-muted-foreground text-sm tracking-wider uppercase mb-2">
+              Следите за нами
+            </p>
+            <h2 className="font-serif text-3xl md:text-5xl">@vox_alisalanskaja</h2>
+          </motion.div>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+            {products.map((product, index) => (
+              <motion.div
+                key={product.id}
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                className="aspect-square overflow-hidden group cursor-pointer"
+              >
+                <img
+                  src={product.image}
+                  alt=""
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                />
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
 
       <Footer />
     </div>

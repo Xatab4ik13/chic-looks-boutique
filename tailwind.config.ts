@@ -14,8 +14,8 @@ export default {
     },
     extend: {
       fontFamily: {
-        serif: ["Cormorant Garamond", "serif"],
-        sans: ["Montserrat", "sans-serif"],
+        serif: ["Playfair Display", "serif"],
+        sans: ["Jost", "sans-serif"],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -66,10 +66,12 @@ export default {
         "angel-wing": "hsl(var(--angel-wing))",
         buttercream: "hsl(var(--buttercream))",
         "jet-stream": "hsl(var(--jet-stream))",
+        "rose-blush": "hsl(var(--rose-blush))",
         brand: {
           dark: "hsl(var(--brand-dark))",
           cream: "hsl(var(--brand-cream))",
           warm: "hsl(var(--brand-warm))",
+          rose: "hsl(var(--brand-rose))",
         },
       },
       borderRadius: {

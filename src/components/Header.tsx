@@ -112,7 +112,7 @@ const Header = () => {
       >
         <div className="p-8">
           <div className={`flex items-center justify-between mb-16 menu-item ${isMenuOpen ? "menu-item-visible" : ""}`} style={{ transitionDelay: "100ms" }}>
-            <h2 className="font-serif text-2xl tracking-[0.25em]">VOX</h2>
+            <Link to="/" onClick={() => setIsMenuOpen(false)} className="font-serif text-2xl tracking-[0.25em] hover:opacity-70 transition-opacity">VOX</Link>
             <button
               onClick={() => setIsMenuOpen(false)}
               className="p-2 hover:opacity-70 transition-opacity"

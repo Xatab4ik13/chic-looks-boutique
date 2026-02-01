@@ -3,20 +3,21 @@ import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion"
 import { ArrowRight, ChevronDown } from "lucide-react";
 import { Link } from "react-router-dom";
 import heroMain from "@/assets/hero-main.jpg";
-import dressBurgundy from "@/assets/products/dress-burgundy.jpg";
-import dressRed from "@/assets/products/dress-red.jpg";
+import heroSlide2 from "@/assets/hero-slide-2.jpg";
+import heroSlide3 from "@/assets/hero-slide-3.jpg";
+
 const slides = [{
   image: heroMain,
   title: "Новая коллекция",
   subtitle: "Весна 2026"
 }, {
-  image: dressBurgundy,
+  image: heroSlide2,
   title: "Платья",
   subtitle: "Элегантность в деталях"
 }, {
-  image: dressRed,
-  title: "Вечерние образы",
-  subtitle: "Для особых случаев"
+  image: heroSlide3,
+  title: "Корсеты",
+  subtitle: "Изысканный силуэт"
 }];
 const Hero = () => {
   const containerRef = useRef<HTMLDivElement>(null);

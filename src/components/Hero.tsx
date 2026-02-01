@@ -2,6 +2,7 @@ import { useRef, useEffect, useState } from "react";
 import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
 import { ArrowRight, ChevronDown } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useIsMobile } from "@/hooks/use-mobile";
 import heroMain from "@/assets/hero-main.jpg";
 import heroSlide2 from "@/assets/hero-slide-2.jpg";
 import heroSlide3 from "@/assets/hero-slide-3.jpg";
@@ -19,19 +20,24 @@ const slides = [{
   title: "Корсеты",
   subtitle: "Изысканный силуэт"
 }];
+
 const Hero = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
+  const isMobile = useIsMobile();
+  
   const {
     scrollYProgress
   } = useScroll({
     target: containerRef,
     offset: ["start start", "end start"]
   });
-  const y = useTransform(scrollYProgress, [0, 1], ["0%", "40%"]);
+  
+  // Disable parallax effects on mobile for better performance
+  const y = useTransform(scrollYProgress, [0, 1], isMobile ? ["0%", "0%"] : ["0%", "40%"]);
   const opacity = useTransform(scrollYProgress, [0, 0.6], [1, 0]);
-  const scale = useTransform(scrollYProgress, [0, 1], [1, 1.15]);
+  const scale = useTransform(scrollYProgress, [0, 1], isMobile ? [1, 1] : [1, 1.15]);
 
   // Auto-slide
   useEffect(() => {

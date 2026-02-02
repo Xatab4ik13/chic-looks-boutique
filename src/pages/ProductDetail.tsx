@@ -147,16 +147,22 @@ const ProductDetail = () => {
               transition={{ duration: 0.6 }}
               className="relative"
             >
-              <div className="aspect-[3/4] overflow-hidden bg-secondary">
-                <motion.img
-                  key={currentImage}
-                  src={currentImage}
-                  alt={product.name}
-                  className="w-full h-full object-cover"
-                  initial={{ opacity: 0, scale: 1.05 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.5 }}
-                />
+              <div className="aspect-[3/4] overflow-hidden bg-secondary relative">
+                <AnimatePresence mode="wait">
+                  <motion.img
+                    key={currentImage}
+                    src={currentImage}
+                    alt={product.name}
+                    className="w-full h-full object-cover absolute inset-0"
+                    initial={{ opacity: 0, scale: 1.03 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.97 }}
+                    transition={{ 
+                      duration: 0.4, 
+                      ease: [0.4, 0, 0.2, 1]
+                    }}
+                  />
+                </AnimatePresence>
               </div>
 
               {/* Badges */}

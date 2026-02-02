@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
-import { ShoppingBag } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { ShoppingBag, X, Check } from "lucide-react";
 import { Product } from "@/types/product";
 import { useCartStore } from "@/store/cartStore";
 
@@ -10,8 +10,13 @@ interface ProductCardProps {
   index?: number;
 }
 
+const sizes = ["XS", "S", "M", "L", "XL"];
+
 const ProductCard = ({ product, index = 0 }: ProductCardProps) => {
   const [isHovered, setIsHovered] = useState(false);
+  const [showSizeSelector, setShowSizeSelector] = useState(false);
+  const [selectedSize, setSelectedSize] = useState<string | null>(null);
+  const [addedToCart, setAddedToCart] = useState(false);
   const { addItem, openCart } = useCartStore();
   const navigate = useNavigate();
 
@@ -19,13 +24,38 @@ const ProductCard = ({ product, index = 0 }: ProductCardProps) => {
     return new Intl.NumberFormat("ru-RU").format(price) + " ₽";
   };
 
-  const handleAddToCart = (e: React.MouseEvent) => {
+  const handleAddToCartClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    addItem(product);
-    openCart();
+    setShowSizeSelector(true);
+  };
+
+  const handleSizeSelect = (size: string) => {
+    setSelectedSize(size);
+  };
+
+  const handleConfirmAdd = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!selectedSize) return;
+    
+    addItem(product, selectedSize);
+    setAddedToCart(true);
+    
+    setTimeout(() => {
+      setAddedToCart(false);
+      setShowSizeSelector(false);
+      setSelectedSize(null);
+      openCart();
+    }, 800);
+  };
+
+  const handleCloseSizeSelector = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setShowSizeSelector(false);
+    setSelectedSize(null);
   };
 
   const handleClick = () => {
+    if (showSizeSelector) return;
     navigate(`/product/${product.id}`);
   };
 
@@ -35,7 +65,12 @@ const ProductCard = ({ product, index = 0 }: ProductCardProps) => {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, delay: index * 0.1 }}
       onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      onMouseLeave={() => {
+        setIsHovered(false);
+        if (!showSizeSelector) {
+          setSelectedSize(null);
+        }
+      }}
       onClick={handleClick}
       className="group cursor-pointer"
     >
@@ -83,21 +118,91 @@ const ProductCard = ({ product, index = 0 }: ProductCardProps) => {
           )}
         </div>
 
+        {/* Size Selector Overlay */}
+        <AnimatePresence>
+          {showSizeSelector && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="absolute inset-0 bg-background/95 backdrop-blur-sm flex flex-col justify-center items-center p-4"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button
+                onClick={handleCloseSizeSelector}
+                className="absolute top-3 right-3 p-1 hover:bg-muted rounded-full transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+              
+              <p className="text-xs uppercase tracking-wider text-muted-foreground mb-4">
+                Выберите размер
+              </p>
+              
+              <div className="flex flex-wrap justify-center gap-2 mb-4">
+                {sizes.map((size) => (
+                  <button
+                    key={size}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleSizeSelect(size);
+                    }}
+                    className={`w-10 h-10 border text-sm font-medium transition-all ${
+                      selectedSize === size
+                        ? "border-foreground bg-foreground text-background"
+                        : "border-border hover:border-foreground"
+                    }`}
+                  >
+                    {size}
+                  </button>
+                ))}
+              </div>
+              
+              <motion.button
+                onClick={handleConfirmAdd}
+                disabled={!selectedSize || addedToCart}
+                whileTap={{ scale: 0.95 }}
+                className={`w-full max-w-[180px] py-2.5 text-xs tracking-wider uppercase font-medium transition-all ${
+                  addedToCart
+                    ? "bg-green-600 text-white"
+                    : selectedSize
+                    ? "bg-foreground text-background hover:bg-foreground/90"
+                    : "bg-muted text-muted-foreground cursor-not-allowed"
+                }`}
+              >
+                {addedToCart ? (
+                  <span className="flex items-center justify-center gap-1">
+                    <Check className="w-4 h-4" />
+                    Добавлено
+                  </span>
+                ) : (
+                  "Добавить"
+                )}
+              </motion.button>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         {/* Quick Actions */}
-        <motion.div
-          className="absolute bottom-2 left-2 right-2 md:bottom-4 md:left-4 md:right-4"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: isHovered ? 1 : 0, y: isHovered ? 0 : 20 }}
-          transition={{ duration: 0.3 }}
-        >
-          <button
-            onClick={handleAddToCart}
-            className="w-full flex items-center justify-center gap-1 md:gap-2 py-2 md:py-3 bg-background/95 backdrop-blur-sm text-foreground text-xs md:text-sm tracking-wider uppercase hover:bg-background transition-colors"
-          >
-            <ShoppingBag className="w-3 h-3 md:w-4 md:h-4" />
-            <span>В корзину</span>
-          </button>
-        </motion.div>
+        <AnimatePresence>
+          {!showSizeSelector && (
+            <motion.div
+              className="absolute bottom-2 left-2 right-2 md:bottom-4 md:left-4 md:right-4"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: isHovered ? 1 : 0, y: isHovered ? 0 : 20 }}
+              exit={{ opacity: 0, y: 20 }}
+              transition={{ duration: 0.3 }}
+            >
+              <button
+                onClick={handleAddToCartClick}
+                className="w-full flex items-center justify-center gap-1 md:gap-2 py-2 md:py-3 bg-background/95 backdrop-blur-sm text-foreground text-xs md:text-sm tracking-wider uppercase hover:bg-background transition-colors"
+              >
+                <ShoppingBag className="w-3 h-3 md:w-4 md:h-4" />
+                <span>В корзину</span>
+              </button>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
       {/* Product Info */}

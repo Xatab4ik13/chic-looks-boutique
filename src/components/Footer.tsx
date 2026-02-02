@@ -73,13 +73,13 @@ const Footer = () => {
               viewport={{ once: true }}
               transition={{ delay: groupIndex * 0.1 }}
             >
-              <h3 className="font-serif text-lg mb-6">{group.title}</h3>
+              <h3 className="text-sm tracking-wider uppercase mb-6">{group.title}</h3>
               <ul className="space-y-3">
                 {group.links.map((link) => (
                   <li key={link.name}>
                     <Link
                       to={link.href}
-                      className="text-sm text-background/60 hover:text-background transition-colors"
+                      className="text-xs tracking-wider uppercase text-background/60 hover:text-background transition-colors"
                     >
                       {link.name}
                     </Link>

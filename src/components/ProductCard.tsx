@@ -103,7 +103,7 @@ const ProductCard = ({ product, index = 0 }: ProductCardProps) => {
       {/* Product Info */}
       <div className="space-y-2">
         <motion.h3
-          className="text-sm tracking-wide leading-tight"
+          className="text-sm font-medium leading-tight"
           animate={{ x: isHovered ? 4 : 0 }}
           transition={{ duration: 0.3 }}
         >

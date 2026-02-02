@@ -99,11 +99,15 @@ const ProductDetail = () => {
   };
 
   const careInstructions = [
-    "Деликатная стирка при 30°C",
-    "Не отбеливать",
-    "Гладить при низкой температуре",
-    "Химчистка разрешена",
+    "Деликатная стирка до 30°C",
+    "Не замачивать",
+    "Сушить на плоскости в расправленном виде",
+    "Сухая чистка (химчистка)",
+    "Не выкручивать",
+    "При глажке использовать пар",
   ];
+
+  const composition = "90% полиэстер, 10% эластан";
 
   return (
     <div className="min-h-screen bg-background">
@@ -393,12 +397,43 @@ const ProductDetail = () => {
                 </motion.button>
               </motion.div>
 
-              {/* Care Instructions */}
+              {/* Features */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.95 }}
+                className="mt-10 grid grid-cols-2 gap-4"
+              >
+                <div className="p-4 border border-border">
+                  <p className="text-sm text-foreground">Собственное производство</p>
+                </div>
+                <div className="p-4 border border-border">
+                  <p className="text-sm text-foreground">Премиальные ткани</p>
+                </div>
+                <div className="col-span-2 p-4 border border-border">
+                  <p className="text-sm text-foreground">Экспресс доставка во все города</p>
+                </div>
+              </motion.div>
+
+              {/* Composition */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 1 }}
-                className="mt-12 pt-8 border-t border-border"
+                className="mt-8 pt-8 border-t border-border"
+              >
+                <h3 className="text-muted-foreground uppercase text-sm tracking-wider mb-4">
+                  Состав
+                </h3>
+                <p className="text-sm text-foreground">{composition}</p>
+              </motion.div>
+
+              {/* Care Instructions */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 1.1 }}
+                className="mt-8 pt-8 border-t border-border"
               >
                 <h3 className="text-muted-foreground uppercase text-sm tracking-wider mb-4">
                   Уход за изделием
@@ -409,10 +444,10 @@ const ProductDetail = () => {
                       key={index}
                       initial={{ opacity: 0, x: -10 }}
                       animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: 1.1 + index * 0.1 }}
-                      className="text-muted-foreground text-sm flex items-center gap-2"
+                      transition={{ delay: 1.2 + index * 0.1 }}
+                      className="text-sm text-foreground flex items-center gap-2"
                     >
-                      <span className="w-1.5 h-1.5 rounded-full bg-primary" />
+                      <span className="w-1.5 h-1.5 rounded-full bg-foreground" />
                       {instruction}
                     </motion.li>
                   ))}

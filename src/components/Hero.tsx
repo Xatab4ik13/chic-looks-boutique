@@ -15,30 +15,17 @@ const Hero = () => {
           alt="Новая коллекция"
           className="w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-background/60 via-background/20 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-foreground/40 via-transparent to-transparent" />
         
-        <div className="absolute inset-0 flex items-center">
-          <div className="container mx-auto">
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              className="max-w-xl"
-            >
-              <h1 className="font-serif text-5xl md:text-7xl lg:text-8xl text-foreground mb-6">
-                Новая
-                <br />
-                коллекция
-              </h1>
-              <Link
-                to="/catalog"
-                className="inline-flex items-center gap-3 btn-primary"
-              >
-                Смотреть каталог
-                <ArrowRight className="w-4 h-4" />
-              </Link>
-            </motion.div>
-          </div>
+        <div className="absolute inset-0 flex items-end justify-center pb-12 md:pb-16">
+          <motion.h1
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="font-serif text-2xl md:text-3xl lg:text-4xl text-background font-light tracking-[0.3em] uppercase"
+          >
+            New Collection
+          </motion.h1>
         </div>
       </div>
 

@@ -28,53 +28,55 @@ const Hero = () => {
         </div>
       </div>
 
-      {/* Two Vertical Banners */}
-      <div className="flex flex-col">
-        {/* Catalog Banner */}
-        <Link to="/catalog" className="group relative overflow-hidden h-[70vh]">
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="h-full"
-          >
-            <img
-              src={heroSlide2}
-              alt="Каталог"
-              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-foreground/50 via-transparent to-transparent" />
-            <div className="absolute inset-0 flex items-end justify-center pb-16 md:pb-20">
-              <h3 className="font-serif text-xl md:text-2xl lg:text-3xl text-background font-light tracking-[0.3em] uppercase">
-                Каталог
-              </h3>
-            </div>
-          </motion.div>
-        </Link>
+      {/* Two Horizontal Banners */}
+      <div className="container mx-auto py-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+          {/* Catalog Banner */}
+          <Link to="/catalog" className="group relative overflow-hidden aspect-[4/5]">
+            <motion.div
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="h-full"
+            >
+              <img
+                src={heroSlide2}
+                alt="Каталог"
+                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-foreground/50 via-transparent to-transparent" />
+              <div className="absolute inset-0 flex items-end justify-center pb-8 md:pb-12">
+                <h3 className="font-serif text-lg md:text-xl lg:text-2xl text-background font-light tracking-[0.3em] uppercase">
+                  Каталог
+                </h3>
+              </div>
+            </motion.div>
+          </Link>
 
-        {/* Sale Banner */}
-        <Link to="/catalog?sale=true" className="group relative overflow-hidden h-[70vh]">
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            className="h-full"
-          >
-            <img
-              src={heroSlide3}
-              alt="Скидки"
-              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-foreground/50 via-transparent to-transparent" />
-            <div className="absolute inset-0 flex items-end justify-center pb-16 md:pb-20">
-              <h3 className="font-serif text-xl md:text-2xl lg:text-3xl text-background font-light tracking-[0.3em] uppercase">
-                Скидки
-              </h3>
-            </div>
-          </motion.div>
-        </Link>
+          {/* Sale Banner */}
+          <Link to="/catalog?sale=true" className="group relative overflow-hidden aspect-[4/5]">
+            <motion.div
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+              className="h-full"
+            >
+              <img
+                src={heroSlide3}
+                alt="Скидки"
+                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-foreground/50 via-transparent to-transparent" />
+              <div className="absolute inset-0 flex items-end justify-center pb-8 md:pb-12">
+                <h3 className="font-serif text-lg md:text-xl lg:text-2xl text-background font-light tracking-[0.3em] uppercase">
+                  Скидки
+                </h3>
+              </div>
+            </motion.div>
+          </Link>
+        </div>
       </div>
     </section>
   );

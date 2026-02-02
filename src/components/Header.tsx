@@ -40,14 +40,20 @@ const Header = () => {
               aria-label="Меню"
             >
               <div className="w-6 flex flex-col gap-1.5">
-                <span className="block h-px bg-foreground w-full" />
-                <span className="block h-px bg-foreground w-4" />
+                <span className={`block h-px w-full transition-colors duration-300 ${
+                  isScrolled || !isHome ? "bg-foreground" : "bg-background"
+                }`} />
+                <span className={`block h-px w-4 transition-colors duration-300 ${
+                  isScrolled || !isHome ? "bg-foreground" : "bg-background"
+                }`} />
               </div>
             </button>
 
             {/* Logo */}
             <Link to="/" className="absolute left-1/2 -translate-x-1/2">
-              <h1 className="font-serif text-2xl md:text-3xl tracking-[0.25em] font-medium">
+              <h1 className={`font-serif text-2xl md:text-3xl tracking-[0.25em] font-medium transition-colors duration-300 ${
+                isScrolled || !isHome ? "text-foreground" : "text-background"
+              }`}>
                 VOX
               </h1>
             </Link>
@@ -56,20 +62,26 @@ const Header = () => {
             <div className="flex items-center gap-2 md:gap-4">
               <button
                 onClick={() => setIsSearchOpen(!isSearchOpen)}
-                className="p-2 hover:opacity-70 transition-opacity hidden md:flex items-center justify-center"
+                className={`p-2 hover:opacity-70 transition-all hidden md:flex items-center justify-center ${
+                  isScrolled || !isHome ? "text-foreground" : "text-background"
+                }`}
                 aria-label="Поиск"
               >
                 <Search className="w-5 h-5" strokeWidth={1.5} />
               </button>
               <button
-                className="p-2 hover:opacity-70 transition-opacity hidden md:flex items-center justify-center"
+                className={`p-2 hover:opacity-70 transition-all hidden md:flex items-center justify-center ${
+                  isScrolled || !isHome ? "text-foreground" : "text-background"
+                }`}
                 aria-label="Избранное"
               >
                 <Heart className="w-5 h-5" strokeWidth={1.5} />
               </button>
               <button
                 onClick={openCart}
-                className="p-2 hover:opacity-70 transition-opacity relative flex items-center justify-center"
+                className={`p-2 hover:opacity-70 transition-all relative flex items-center justify-center ${
+                  isScrolled || !isHome ? "text-foreground" : "text-background"
+                }`}
                 aria-label="Корзина"
               >
                 <ShoppingBag className="w-5 h-5" strokeWidth={1.5} />

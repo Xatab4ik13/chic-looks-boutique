@@ -29,7 +29,7 @@ const Index = () => {
               <p className="text-muted-foreground text-sm tracking-wider uppercase mb-4">
                 О бренде
               </p>
-              <h2 className="font-serif text-3xl md:text-5xl mb-6">
+              <h2 className="font-serif text-2xl md:text-3xl mb-6">
                 VOX — голос вашего стиля
               </h2>
               <p className="text-muted-foreground leading-relaxed mb-6">
@@ -93,9 +93,9 @@ const Index = () => {
               className="inline-flex items-center gap-4 group"
             >
               <Instagram className="w-8 h-8 text-foreground/70 group-hover:text-foreground transition-colors" />
-              <h2 className="font-serif text-3xl md:text-5xl group-hover:text-foreground/70 transition-colors">
+              <span className="text-lg md:text-xl tracking-wider uppercase group-hover:text-foreground/70 transition-colors">
                 @vox_alisalanskaja
-              </h2>
+              </span>
             </a>
           </motion.div>
         </div>

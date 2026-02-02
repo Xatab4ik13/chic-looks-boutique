@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { SlidersHorizontal, X, ChevronDown } from "lucide-react";
 import Header from "@/components/Header";
@@ -11,13 +11,22 @@ import { useState } from "react";
 
 const Catalog = () => {
   const { category: categorySlug, subcategory } = useParams();
+  const [searchParams] = useSearchParams();
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [sortBy, setSortBy] = useState("new");
 
+  const filterType = searchParams.get("filter"); // "new" or "sale"
   const currentCategory = categories.find((c) => c.slug === categorySlug);
 
   const filteredProducts = useMemo(() => {
     let filtered = [...products];
+
+    // Filter by special filter from URL query params
+    if (filterType === "new") {
+      filtered = filtered.filter((p) => p.isNew);
+    } else if (filterType === "sale") {
+      filtered = filtered.filter((p) => p.isSale);
+    }
 
     // Filter by category from URL
     if (categorySlug) {
@@ -43,7 +52,14 @@ const Catalog = () => {
     }
 
     return filtered;
-  }, [categorySlug, subcategory, sortBy]);
+  }, [categorySlug, subcategory, filterType, sortBy]);
+
+  // Get page title based on filter
+  const getPageTitle = () => {
+    if (filterType === "new") return "Новая коллекция";
+    if (filterType === "sale") return "Скидки";
+    return currentCategory?.name || "Все товары";
+  };
 
   return (
     <div className="min-h-screen">
@@ -62,7 +78,7 @@ const Catalog = () => {
               Коллекция
             </p>
             <h1 className="font-serif text-4xl md:text-6xl">
-              {currentCategory?.name || "Все товары"}
+              {getPageTitle()}
             </h1>
           </motion.div>
         </div>

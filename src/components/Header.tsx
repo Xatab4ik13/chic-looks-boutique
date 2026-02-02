@@ -137,7 +137,7 @@ const Header = () => {
                   onClick={() => setIsMenuOpen(false)}
                   className="group flex items-center justify-between py-5 border-b border-border"
                 >
-                  <span className="text-lg tracking-wide group-hover:translate-x-2 transition-transform duration-300">
+                  <span className="text-base group-hover:translate-x-2 transition-transform duration-300">
                     {category.name}
                   </span>
                   <span className="text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity">
@@ -171,7 +171,7 @@ const Header = () => {
                 onClick={() => setIsMenuOpen(false)}
                 className="group flex items-center justify-between py-5 border-b border-border"
               >
-                <span className="text-lg tracking-wide group-hover:translate-x-2 transition-transform duration-300">
+                <span className="text-base group-hover:translate-x-2 transition-transform duration-300">
                   Доставка и Оплата
                 </span>
                 <span className="text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity">
@@ -188,7 +188,7 @@ const Header = () => {
                 onClick={() => setIsMenuOpen(false)}
                 className="group flex items-center justify-between py-5 border-b border-border"
               >
-                <span className="text-lg tracking-wide group-hover:translate-x-2 transition-transform duration-300">
+                <span className="text-base group-hover:translate-x-2 transition-transform duration-300">
                   Обмен и Возврат
                 </span>
                 <span className="text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity">
@@ -205,7 +205,7 @@ const Header = () => {
                 onClick={() => setIsMenuOpen(false)}
                 className="group flex items-center justify-between py-5 border-b border-border"
               >
-                <span className="text-lg tracking-wide group-hover:translate-x-2 transition-transform duration-300">
+                <span className="text-base group-hover:translate-x-2 transition-transform duration-300">
                   Контакты
                 </span>
                 <span className="text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity">

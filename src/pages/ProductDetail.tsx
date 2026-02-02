@@ -1,12 +1,13 @@
 import { useState, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, Heart, Minus, Plus, Check } from "lucide-react";
+import { ArrowLeft, Minus, Plus, Check } from "lucide-react";
 import Header from "@/components/Header";
 import CartDrawer from "@/components/CartDrawer";
 import Footer from "@/components/Footer";
 import { products } from "@/data/products";
 import { useCartStore } from "@/store/cartStore";
+import { productColors, ProductColor } from "@/types/product";
 
 const sizes = ["XS", "S", "M", "L", "XL"];
 
@@ -14,8 +15,8 @@ const ProductDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
+  const [selectedColor, setSelectedColor] = useState<ProductColor | null>(null);
   const [quantity, setQuantity] = useState(1);
-  const [isLiked, setIsLiked] = useState(false);
   const [showSizeError, setShowSizeError] = useState(false);
   const [addedToCart, setAddedToCart] = useState(false);
   const { addItem, openCart } = useCartStore();
@@ -23,6 +24,19 @@ const ProductDetail = () => {
   const product = useMemo(() => {
     return products.find((p) => p.id === id);
   }, [id]);
+
+  // Get available colors for similar products
+  const availableColors = useMemo(() => {
+    if (!product) return [];
+    // Find products with similar names (same base name but different colors)
+    const baseName = product.name.split(' ').slice(0, 2).join(' ');
+    const similarProducts = products.filter(p => 
+      p.name.startsWith(baseName) || p.id === product.id
+    );
+    return similarProducts
+      .map(p => p.color)
+      .filter((color): color is ProductColor => !!color);
+  }, [product]);
 
   const relatedProducts = useMemo(() => {
     if (!product) return [];
@@ -155,18 +169,6 @@ const ProductDetail = () => {
                 )}
               </div>
 
-              {/* Wishlist Button */}
-              <motion.button
-                initial={{ opacity: 0, scale: 0 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.5, type: "spring" }}
-                onClick={() => setIsLiked(!isLiked)}
-                className={`absolute top-6 right-6 w-12 h-12 rounded-full bg-background/90 backdrop-blur-sm flex items-center justify-center shadow-lg transition-all hover:scale-110 ${
-                  isLiked ? "text-destructive" : "text-foreground"
-                }`}
-              >
-                <Heart className={`w-5 h-5 ${isLiked ? "fill-current" : ""}`} />
-              </motion.button>
             </motion.div>
 
             {/* Product Info */}
@@ -205,7 +207,7 @@ const ProductDetail = () => {
                 transition={{ delay: 0.5 }}
                 className="flex items-center gap-4 mb-8"
               >
-                <span className="font-serif text-2xl md:text-3xl">
+                <span className="text-muted-foreground text-lg md:text-xl font-semibold">
                   {formatPrice(product.price)}
                 </span>
                 {product.oldPrice && (
@@ -230,7 +232,44 @@ const ProductDetail = () => {
                 {getDescription()}
               </motion.p>
 
-              {/* Size Selection */}
+              {/* Color Selection */}
+              {product.color && (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.65 }}
+                  className="mb-8"
+                >
+                  <h3 className="text-muted-foreground uppercase text-sm tracking-wider mb-4">
+                    Цвет
+                  </h3>
+                  <div className="flex flex-wrap gap-3">
+                    {productColors
+                      .filter(c => c.value === product.color || availableColors.includes(c.value))
+                      .map((color, index) => (
+                        <motion.button
+                          key={color.value}
+                          initial={{ opacity: 0, scale: 0.8 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          transition={{ delay: 0.65 + index * 0.05 }}
+                          onClick={() => setSelectedColor(color.value)}
+                          className={`w-10 h-10 rounded-full border-2 flex items-center justify-center transition-all duration-300 hover:scale-110 ${
+                            (selectedColor || product.color) === color.value
+                              ? "border-foreground ring-2 ring-foreground ring-offset-2"
+                              : "border-border hover:border-foreground"
+                          }`}
+                          style={{ backgroundColor: color.hex }}
+                          title={color.label}
+                        >
+                          {(selectedColor || product.color) === color.value && (
+                            <Check className={`w-4 h-4 ${color.value === 'white' || color.value === 'cream' || color.value === 'beige' ? 'text-foreground' : 'text-white'}`} />
+                          )}
+                        </motion.button>
+                      ))}
+                  </div>
+                </motion.div>
+              )}
+
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -238,7 +277,7 @@ const ProductDetail = () => {
                 className="mb-8"
               >
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="font-medium tracking-wide uppercase text-sm">
+                  <h3 className="text-muted-foreground uppercase text-sm tracking-wider">
                     Размер
                   </h3>
                   <button className="text-sm text-muted-foreground hover:text-foreground underline underline-offset-4 transition-colors">
@@ -287,7 +326,7 @@ const ProductDetail = () => {
                 transition={{ delay: 0.8 }}
                 className="mb-8"
               >
-                <h3 className="font-medium tracking-wide uppercase text-sm mb-4">
+                <h3 className="text-muted-foreground uppercase text-sm tracking-wider mb-4">
                   Количество
                 </h3>
                 <div className="flex items-center gap-1 border border-border w-fit">
@@ -361,7 +400,7 @@ const ProductDetail = () => {
                 transition={{ delay: 1 }}
                 className="mt-12 pt-8 border-t border-border"
               >
-                <h3 className="font-medium tracking-wide uppercase text-sm mb-4">
+                <h3 className="text-muted-foreground uppercase text-sm tracking-wider mb-4">
                   Уход за изделием
                 </h3>
                 <ul className="space-y-2">

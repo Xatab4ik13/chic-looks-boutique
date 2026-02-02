@@ -15,7 +15,7 @@ import {
   Image as ImageIcon
 } from "lucide-react";
 import { useAdminProductStore, categories, skuPrefixes } from "@/store/adminProductStore";
-import { Product } from "@/types/product";
+import { Product, productColors, ProductColor } from "@/types/product";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -200,6 +200,7 @@ const AdminProducts = () => {
     category: "",
     subcategory: "",
     image: "",
+    color: "" as ProductColor | "",
     isNew: false,
     isSale: false,
   });
@@ -242,6 +243,7 @@ const AdminProducts = () => {
       category: "",
       subcategory: "",
       image: "",
+      color: "",
       isNew: false,
       isSale: false,
     });
@@ -264,6 +266,7 @@ const AdminProducts = () => {
       category: product.category,
       subcategory: product.subcategory || "",
       image: product.image,
+      color: product.color || "",
       isNew: product.isNew || false,
       isSale: product.isSale || false,
     });
@@ -291,6 +294,7 @@ const AdminProducts = () => {
       category: formData.category,
       subcategory: formData.subcategory || undefined,
       image: formData.image || "/placeholder.svg",
+      color: formData.color || undefined,
       isNew: formData.isNew,
       isSale: formData.isSale,
     });
@@ -323,6 +327,7 @@ const AdminProducts = () => {
       category: formData.category,
       subcategory: formData.subcategory || undefined,
       image: formData.image,
+      color: formData.color || undefined,
       isNew: formData.isNew,
       isSale: formData.isSale,
     });
@@ -618,7 +623,39 @@ const AdminProducts = () => {
               id="image"
             />
 
-            {/* Tags */}
+            {/* Color */}
+            <div className="space-y-2">
+              <Label>Цвет</Label>
+              <div className="flex flex-wrap gap-2">
+                {productColors.map((color) => (
+                  <button
+                    key={color.value}
+                    type="button"
+                    onClick={() => setFormData(prev => ({ 
+                      ...prev, 
+                      color: prev.color === color.value ? "" : color.value 
+                    }))}
+                    className={`w-8 h-8 rounded-full border-2 flex items-center justify-center transition-all hover:scale-110 ${
+                      formData.color === color.value
+                        ? "border-foreground ring-2 ring-foreground ring-offset-1"
+                        : "border-border"
+                    }`}
+                    style={{ backgroundColor: color.hex }}
+                    title={color.label}
+                  >
+                    {formData.color === color.value && (
+                      <Check className={`w-4 h-4 ${color.value === 'white' || color.value === 'cream' || color.value === 'beige' ? 'text-foreground' : 'text-white'}`} />
+                    )}
+                  </button>
+                ))}
+              </div>
+              {formData.color && (
+                <p className="text-xs text-muted-foreground">
+                  Выбран: {productColors.find(c => c.value === formData.color)?.label}
+                </p>
+              )}
+            </div>
+
             <div className="flex items-center gap-6">
               <div className="flex items-center gap-2">
                 <Checkbox
@@ -760,6 +797,39 @@ const AdminProducts = () => {
               onChange={(image) => setFormData(prev => ({ ...prev, image }))}
               id="edit-image"
             />
+
+            {/* Color */}
+            <div className="space-y-2">
+              <Label>Цвет</Label>
+              <div className="flex flex-wrap gap-2">
+                {productColors.map((color) => (
+                  <button
+                    key={color.value}
+                    type="button"
+                    onClick={() => setFormData(prev => ({ 
+                      ...prev, 
+                      color: prev.color === color.value ? "" : color.value 
+                    }))}
+                    className={`w-8 h-8 rounded-full border-2 flex items-center justify-center transition-all hover:scale-110 ${
+                      formData.color === color.value
+                        ? "border-foreground ring-2 ring-foreground ring-offset-1"
+                        : "border-border"
+                    }`}
+                    style={{ backgroundColor: color.hex }}
+                    title={color.label}
+                  >
+                    {formData.color === color.value && (
+                      <Check className={`w-4 h-4 ${color.value === 'white' || color.value === 'cream' || color.value === 'beige' ? 'text-foreground' : 'text-white'}`} />
+                    )}
+                  </button>
+                ))}
+              </div>
+              {formData.color && (
+                <p className="text-xs text-muted-foreground">
+                  Выбран: {productColors.find(c => c.value === formData.color)?.label}
+                </p>
+              )}
+            </div>
 
             {/* Tags */}
             <div className="flex items-center gap-6">

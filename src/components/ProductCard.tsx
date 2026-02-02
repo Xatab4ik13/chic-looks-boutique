@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ShoppingBag, Heart } from "lucide-react";
+import { ShoppingBag } from "lucide-react";
 import { Product } from "@/types/product";
 import { useCartStore } from "@/store/cartStore";
 
@@ -12,7 +12,6 @@ interface ProductCardProps {
 
 const ProductCard = ({ product, index = 0 }: ProductCardProps) => {
   const [isHovered, setIsHovered] = useState(false);
-  const [isLiked, setIsLiked] = useState(false);
   const { addItem, openCart } = useCartStore();
   const navigate = useNavigate();
 
@@ -86,28 +85,17 @@ const ProductCard = ({ product, index = 0 }: ProductCardProps) => {
 
         {/* Quick Actions */}
         <motion.div
-          className="absolute bottom-2 left-2 right-2 md:bottom-4 md:left-4 md:right-4 flex gap-2 md:gap-3"
+          className="absolute bottom-2 left-2 right-2 md:bottom-4 md:left-4 md:right-4"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: isHovered ? 1 : 0, y: isHovered ? 0 : 20 }}
           transition={{ duration: 0.3 }}
         >
           <button
             onClick={handleAddToCart}
-            className="flex-1 flex items-center justify-center gap-1 md:gap-2 py-2 md:py-3 bg-background/95 backdrop-blur-sm text-foreground text-xs md:text-sm tracking-wider uppercase hover:bg-background transition-colors"
+            className="w-full flex items-center justify-center gap-1 md:gap-2 py-2 md:py-3 bg-background/95 backdrop-blur-sm text-foreground text-xs md:text-sm tracking-wider uppercase hover:bg-background transition-colors"
           >
             <ShoppingBag className="w-3 h-3 md:w-4 md:h-4" />
-            <span className="hidden sm:inline">В корзину</span>
-          </button>
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              setIsLiked(!isLiked);
-            }}
-            className={`w-9 md:w-12 flex items-center justify-center bg-background/95 backdrop-blur-sm transition-colors ${
-              isLiked ? "text-destructive" : "text-foreground hover:text-destructive"
-            }`}
-          >
-            <Heart className={`w-3 h-3 md:w-4 md:h-4 ${isLiked ? "fill-current" : ""}`} />
+            <span>В корзину</span>
           </button>
         </motion.div>
       </div>
@@ -115,7 +103,7 @@ const ProductCard = ({ product, index = 0 }: ProductCardProps) => {
       {/* Product Info */}
       <div className="space-y-2">
         <motion.h3
-          className="font-serif text-lg leading-tight"
+          className="text-sm tracking-wide leading-tight"
           animate={{ x: isHovered ? 4 : 0 }}
           transition={{ duration: 0.3 }}
         >

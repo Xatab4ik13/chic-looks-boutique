@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { X, ShoppingBag, Search, Heart } from "lucide-react";
+import { X, ShoppingBag, Search } from "lucide-react";
 import { useCartStore } from "@/store/cartStore";
 import { categories } from "@/data/products";
 
@@ -70,14 +70,6 @@ const Header = () => {
                 <Search className="w-5 h-5" strokeWidth={1.5} />
               </button>
               <button
-                className={`p-2 hover:opacity-70 transition-all hidden md:flex items-center justify-center ${
-                  isScrolled || !isHome ? "text-foreground" : "text-background"
-                }`}
-                aria-label="Избранное"
-              >
-                <Heart className="w-5 h-5" strokeWidth={1.5} />
-              </button>
-              <button
                 onClick={openCart}
                 className={`p-2 hover:opacity-70 transition-all relative flex items-center justify-center ${
                   isScrolled || !isHome ? "text-foreground" : "text-background"
@@ -145,7 +137,7 @@ const Header = () => {
                   onClick={() => setIsMenuOpen(false)}
                   className="group flex items-center justify-between py-5 border-b border-border"
                 >
-                  <span className="font-serif text-2xl group-hover:translate-x-2 transition-transform duration-300">
+                  <span className="text-lg tracking-wide group-hover:translate-x-2 transition-transform duration-300">
                     {category.name}
                   </span>
                   <span className="text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity">
@@ -179,7 +171,7 @@ const Header = () => {
                 onClick={() => setIsMenuOpen(false)}
                 className="group flex items-center justify-between py-5 border-b border-border"
               >
-                <span className="font-serif text-2xl group-hover:translate-x-2 transition-transform duration-300">
+                <span className="text-lg tracking-wide group-hover:translate-x-2 transition-transform duration-300">
                   Доставка и Оплата
                 </span>
                 <span className="text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity">
@@ -196,8 +188,25 @@ const Header = () => {
                 onClick={() => setIsMenuOpen(false)}
                 className="group flex items-center justify-between py-5 border-b border-border"
               >
-                <span className="font-serif text-2xl group-hover:translate-x-2 transition-transform duration-300">
+                <span className="text-lg tracking-wide group-hover:translate-x-2 transition-transform duration-300">
                   Обмен и Возврат
+                </span>
+                <span className="text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity">
+                  →
+                </span>
+              </Link>
+            </div>
+            <div 
+              className={`menu-item ${isMenuOpen ? "menu-item-visible" : ""}`}
+              style={{ transitionDelay: `${150 + (categories.length + 2) * 50}ms` }}
+            >
+              <Link
+                to="/contacts"
+                onClick={() => setIsMenuOpen(false)}
+                className="group flex items-center justify-between py-5 border-b border-border"
+              >
+                <span className="text-lg tracking-wide group-hover:translate-x-2 transition-transform duration-300">
+                  Контакты
                 </span>
                 <span className="text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity">
                   →

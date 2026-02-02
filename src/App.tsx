@@ -9,6 +9,7 @@ import Catalog from "./pages/Catalog";
 import ProductDetail from "./pages/ProductDetail";
 import Delivery from "./pages/Delivery";
 import Returns from "./pages/Returns";
+import Contacts from "./pages/Contacts";
 import Checkout from "./pages/Checkout";
 import NotFound from "./pages/NotFound";
 import AdminLayout from "./pages/admin/AdminLayout";
@@ -33,6 +34,7 @@ const App = () => (
           <Route path="/product/:id" element={<ProductDetail />} />
           <Route path="/delivery" element={<Delivery />} />
           <Route path="/returns" element={<Returns />} />
+          <Route path="/contacts" element={<Contacts />} />
           <Route path="/checkout" element={<Checkout />} />
           {/* Admin Routes */}
           <Route path="/admin/login" element={<AdminLogin />} />

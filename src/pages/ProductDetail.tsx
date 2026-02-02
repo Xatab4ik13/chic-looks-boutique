@@ -15,7 +15,7 @@ const ProductDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
-  const [selectedColor, setSelectedColor] = useState<ProductColor | null>(null);
+  const [selectedColorIndex, setSelectedColorIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [showSizeError, setShowSizeError] = useState(false);
   const [addedToCart, setAddedToCart] = useState(false);
@@ -25,18 +25,26 @@ const ProductDetail = () => {
     return products.find((p) => p.id === id);
   }, [id]);
 
-  // Get available colors for similar products
-  const availableColors = useMemo(() => {
+  // Get color variants or fallback to single color
+  const colorVariants = useMemo(() => {
     if (!product) return [];
-    // Find products with similar names (same base name but different colors)
-    const baseName = product.name.split(' ').slice(0, 2).join(' ');
-    const similarProducts = products.filter(p => 
-      p.name.startsWith(baseName) || p.id === product.id
-    );
-    return similarProducts
-      .map(p => p.color)
-      .filter((color): color is ProductColor => !!color);
+    if (product.colorVariants && product.colorVariants.length > 0) {
+      return product.colorVariants;
+    }
+    // Fallback: use product's single color if available
+    if (product.color) {
+      return [{ color: product.color, image: product.image }];
+    }
+    return [];
   }, [product]);
+
+  // Current displayed image based on selected color
+  const currentImage = useMemo(() => {
+    if (colorVariants.length > 0 && colorVariants[selectedColorIndex]?.image) {
+      return colorVariants[selectedColorIndex].image;
+    }
+    return product?.image || "";
+  }, [product, colorVariants, selectedColorIndex]);
 
   const relatedProducts = useMemo(() => {
     if (!product) return [];
@@ -107,7 +115,8 @@ const ProductDetail = () => {
     "При глажке использовать пар",
   ];
 
-  const composition = "90% полиэстер, 10% эластан";
+  // Use product composition if available, otherwise default
+  const productComposition = product?.composition || "90% полиэстер, 10% эластан";
 
   return (
     <div className="min-h-screen bg-background">
@@ -140,12 +149,13 @@ const ProductDetail = () => {
             >
               <div className="aspect-[3/4] overflow-hidden bg-secondary">
                 <motion.img
-                  src={product.image}
+                  key={currentImage}
+                  src={currentImage}
                   alt={product.name}
                   className="w-full h-full object-cover"
-                  initial={{ scale: 1.1 }}
-                  animate={{ scale: 1 }}
-                  transition={{ duration: 0.8 }}
+                  initial={{ opacity: 0, scale: 1.05 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.5 }}
                 />
               </div>
 
@@ -237,7 +247,7 @@ const ProductDetail = () => {
               </motion.p>
 
               {/* Color Selection */}
-              {product.color && (
+              {colorVariants.length > 0 && (
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -248,29 +258,35 @@ const ProductDetail = () => {
                     Цвет
                   </h3>
                   <div className="flex flex-wrap gap-3">
-                    {productColors
-                      .filter(c => c.value === product.color || availableColors.includes(c.value))
-                      .map((color, index) => (
+                    {colorVariants.map((variant, index) => {
+                      const colorInfo = productColors.find(c => c.value === variant.color);
+                      return (
                         <motion.button
-                          key={color.value}
+                          key={variant.color}
                           initial={{ opacity: 0, scale: 0.8 }}
                           animate={{ opacity: 1, scale: 1 }}
                           transition={{ delay: 0.65 + index * 0.05 }}
-                          onClick={() => setSelectedColor(color.value)}
+                          onClick={() => setSelectedColorIndex(index)}
                           className={`w-10 h-10 rounded-full border-2 flex items-center justify-center transition-all duration-300 hover:scale-110 ${
-                            (selectedColor || product.color) === color.value
+                            selectedColorIndex === index
                               ? "border-foreground ring-2 ring-foreground ring-offset-2"
                               : "border-border hover:border-foreground"
                           }`}
-                          style={{ backgroundColor: color.hex }}
-                          title={color.label}
+                          style={{ backgroundColor: colorInfo?.hex }}
+                          title={colorInfo?.label}
                         >
-                          {(selectedColor || product.color) === color.value && (
-                            <Check className={`w-4 h-4 ${color.value === 'white' || color.value === 'cream' || color.value === 'beige' ? 'text-foreground' : 'text-white'}`} />
+                          {selectedColorIndex === index && (
+                            <Check className={`w-4 h-4 ${variant.color === 'white' || variant.color === 'cream' || variant.color === 'beige' ? 'text-foreground' : 'text-white'}`} />
                           )}
                         </motion.button>
-                      ))}
+                      );
+                    })}
                   </div>
+                  {colorVariants[selectedColorIndex] && (
+                    <p className="text-sm text-muted-foreground mt-2">
+                      {productColors.find(c => c.value === colorVariants[selectedColorIndex].color)?.label}
+                    </p>
+                  )}
                 </motion.div>
               )}
 
@@ -425,7 +441,7 @@ const ProductDetail = () => {
                 <h3 className="text-muted-foreground uppercase text-sm tracking-wider mb-4">
                   Состав
                 </h3>
-                <p className="text-sm text-foreground">{composition}</p>
+                <p className="text-sm text-foreground">{productComposition}</p>
               </motion.div>
 
               {/* Care Instructions */}

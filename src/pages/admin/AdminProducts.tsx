@@ -15,11 +15,12 @@ import {
   Image as ImageIcon
 } from "lucide-react";
 import { useAdminProductStore, categories, skuPrefixes } from "@/store/adminProductStore";
-import { Product, productColors, ProductColor } from "@/types/product";
+import { Product, productColors, ProductColor, ColorVariant } from "@/types/product";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
@@ -45,6 +46,65 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
+
+// Small Image Upload for Color Variants
+const SmallImageUpload = ({ 
+  value, 
+  onChange,
+  colorLabel
+}: { 
+  value: string; 
+  onChange: (image: string) => void;
+  colorLabel: string;
+}) => {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFileChange = (file: File | null) => {
+    if (!file) return;
+    if (!file.type.startsWith('image/')) {
+      toast.error("Выберите файл изображения");
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const result = e.target?.result as string;
+      onChange(result);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  return (
+    <div className="relative">
+      {value ? (
+        <div className="relative w-16 h-20 rounded overflow-hidden border border-border">
+          <img src={value} alt={colorLabel} className="w-full h-full object-cover" />
+          <button
+            type="button"
+            onClick={() => onChange("")}
+            className="absolute -top-1 -right-1 p-0.5 rounded-full bg-destructive text-white"
+          >
+            <X className="w-3 h-3" />
+          </button>
+        </div>
+      ) : (
+        <button
+          type="button"
+          onClick={() => fileInputRef.current?.click()}
+          className="w-16 h-20 border-2 border-dashed border-border rounded flex items-center justify-center hover:border-primary/50 transition-colors"
+        >
+          <Upload className="w-4 h-4 text-muted-foreground" />
+        </button>
+      )}
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/*"
+        onChange={(e) => handleFileChange(e.target.files?.[0] || null)}
+        className="hidden"
+      />
+    </div>
+  );
+};
 
 // Image Upload Component
 const ImageUploadField = ({ 
@@ -93,16 +153,11 @@ const ImageUploadField = ({
 
   return (
     <div className="space-y-2">
-      <Label htmlFor={id}>Изображение</Label>
+      <Label htmlFor={id}>Основное изображение</Label>
       
-      {/* Preview */}
       {value && (
         <div className="relative w-full aspect-[3/4] max-w-[200px] rounded-lg overflow-hidden border border-border bg-muted">
-          <img
-            src={value}
-            alt="Preview"
-            className="w-full h-full object-cover"
-          />
+          <img src={value} alt="Preview" className="w-full h-full object-cover" />
           <button
             type="button"
             onClick={() => onChange("")}
@@ -113,7 +168,6 @@ const ImageUploadField = ({
         </div>
       )}
 
-      {/* Upload area */}
       {!value && (
         <div
           onDrop={handleDrop}
@@ -122,10 +176,7 @@ const ImageUploadField = ({
           onClick={() => fileInputRef.current?.click()}
           className={`
             relative border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-colors
-            ${isDragging 
-              ? 'border-primary bg-primary/5' 
-              : 'border-border hover:border-primary/50 hover:bg-muted/50'
-            }
+            ${isDragging ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/50 hover:bg-muted/50'}
           `}
         >
           <div className="flex flex-col items-center gap-2">
@@ -134,11 +185,8 @@ const ImageUploadField = ({
             </div>
             <div>
               <p className="font-medium text-sm">Загрузить изображение</p>
-              <p className="text-xs text-muted-foreground">
-                Перетащите или нажмите для выбора
-              </p>
+              <p className="text-xs text-muted-foreground">Перетащите или нажмите</p>
             </div>
-            <p className="text-xs text-muted-foreground">PNG, JPG, WEBP</p>
           </div>
         </div>
       )}
@@ -151,32 +199,6 @@ const ImageUploadField = ({
         className="hidden"
         id={id}
       />
-
-      {/* URL input as fallback */}
-      <div className="flex items-center gap-2 mt-2">
-        <div className="flex-1 h-px bg-border" />
-        <span className="text-xs text-muted-foreground">или</span>
-        <div className="flex-1 h-px bg-border" />
-      </div>
-      
-      <div className="flex gap-2">
-        <Input
-          value={value.startsWith('data:') ? '' : value}
-          onChange={(e) => onChange(e.target.value)}
-          placeholder="Вставьте URL изображения"
-          className="flex-1"
-        />
-        {value && !value.startsWith('data:') && (
-          <Button
-            type="button"
-            variant="outline"
-            size="icon"
-            onClick={() => onChange("")}
-          >
-            <X className="w-4 h-4" />
-          </Button>
-        )}
-      </div>
     </div>
   );
 };
@@ -200,7 +222,8 @@ const AdminProducts = () => {
     category: "",
     subcategory: "",
     image: "",
-    color: "" as ProductColor | "",
+    composition: "",
+    colorVariants: [] as ColorVariant[],
     isNew: false,
     isSale: false,
   });
@@ -243,10 +266,39 @@ const AdminProducts = () => {
       category: "",
       subcategory: "",
       image: "",
-      color: "",
+      composition: "",
+      colorVariants: [],
       isNew: false,
       isSale: false,
     });
+  };
+
+  // Toggle color variant
+  const toggleColorVariant = (colorValue: ProductColor) => {
+    setFormData(prev => {
+      const exists = prev.colorVariants.find(v => v.color === colorValue);
+      if (exists) {
+        return {
+          ...prev,
+          colorVariants: prev.colorVariants.filter(v => v.color !== colorValue)
+        };
+      } else {
+        return {
+          ...prev,
+          colorVariants: [...prev.colorVariants, { color: colorValue, image: "" }]
+        };
+      }
+    });
+  };
+
+  // Update color variant image
+  const updateColorVariantImage = (colorValue: ProductColor, image: string) => {
+    setFormData(prev => ({
+      ...prev,
+      colorVariants: prev.colorVariants.map(v => 
+        v.color === colorValue ? { ...v, image } : v
+      )
+    }));
   };
 
   // Open add dialog
@@ -266,7 +318,8 @@ const AdminProducts = () => {
       category: product.category,
       subcategory: product.subcategory || "",
       image: product.image,
-      color: product.color || "",
+      composition: product.composition || "",
+      colorVariants: product.colorVariants || [],
       isNew: product.isNew || false,
       isSale: product.isSale || false,
     });
@@ -294,7 +347,9 @@ const AdminProducts = () => {
       category: formData.category,
       subcategory: formData.subcategory || undefined,
       image: formData.image || "/placeholder.svg",
-      color: formData.color || undefined,
+      composition: formData.composition || undefined,
+      colorVariants: formData.colorVariants.length > 0 ? formData.colorVariants : undefined,
+      color: formData.colorVariants.length > 0 ? formData.colorVariants[0].color : undefined,
       isNew: formData.isNew,
       isSale: formData.isSale,
     });
@@ -327,7 +382,9 @@ const AdminProducts = () => {
       category: formData.category,
       subcategory: formData.subcategory || undefined,
       image: formData.image,
-      color: formData.color || undefined,
+      composition: formData.composition || undefined,
+      colorVariants: formData.colorVariants.length > 0 ? formData.colorVariants : undefined,
+      color: formData.colorVariants.length > 0 ? formData.colorVariants[0].color : undefined,
       isNew: formData.isNew,
       isSale: formData.isSale,
     });
@@ -623,36 +680,71 @@ const AdminProducts = () => {
               id="image"
             />
 
-            {/* Color */}
+            {/* Composition */}
             <div className="space-y-2">
-              <Label>Цвет</Label>
+              <Label htmlFor="composition">Состав</Label>
+              <Textarea
+                id="composition"
+                value={formData.composition}
+                onChange={(e) => setFormData(prev => ({ ...prev, composition: e.target.value }))}
+                placeholder="Например: 90% полиэстер, 10% эластан"
+                rows={2}
+              />
+            </div>
+
+            {/* Color Variants */}
+            <div className="space-y-3">
+              <Label>Цвета товара (нажмите для выбора, загрузите фото для каждого)</Label>
               <div className="flex flex-wrap gap-2">
-                {productColors.map((color) => (
-                  <button
-                    key={color.value}
-                    type="button"
-                    onClick={() => setFormData(prev => ({ 
-                      ...prev, 
-                      color: prev.color === color.value ? "" : color.value 
-                    }))}
-                    className={`w-8 h-8 rounded-full border-2 flex items-center justify-center transition-all hover:scale-110 ${
-                      formData.color === color.value
-                        ? "border-foreground ring-2 ring-foreground ring-offset-1"
-                        : "border-border"
-                    }`}
-                    style={{ backgroundColor: color.hex }}
-                    title={color.label}
-                  >
-                    {formData.color === color.value && (
-                      <Check className={`w-4 h-4 ${color.value === 'white' || color.value === 'cream' || color.value === 'beige' ? 'text-foreground' : 'text-white'}`} />
-                    )}
-                  </button>
-                ))}
+                {productColors.map((color) => {
+                  const isSelected = formData.colorVariants.some(v => v.color === color.value);
+                  return (
+                    <button
+                      key={color.value}
+                      type="button"
+                      onClick={() => toggleColorVariant(color.value)}
+                      className={`w-8 h-8 rounded-full border-2 flex items-center justify-center transition-all hover:scale-110 ${
+                        isSelected
+                          ? "border-foreground ring-2 ring-foreground ring-offset-1"
+                          : "border-border"
+                      }`}
+                      style={{ backgroundColor: color.hex }}
+                      title={color.label}
+                    >
+                      {isSelected && (
+                        <Check className={`w-4 h-4 ${color.value === 'white' || color.value === 'cream' || color.value === 'beige' ? 'text-foreground' : 'text-white'}`} />
+                      )}
+                    </button>
+                  );
+                })}
               </div>
-              {formData.color && (
-                <p className="text-xs text-muted-foreground">
-                  Выбран: {productColors.find(c => c.value === formData.color)?.label}
-                </p>
+              
+              {/* Selected colors with image upload */}
+              {formData.colorVariants.length > 0 && (
+                <div className="space-y-3 mt-4 p-4 bg-muted/50 rounded-lg">
+                  <p className="text-sm font-medium">Загрузите фото для каждого цвета:</p>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                    {formData.colorVariants.map((variant) => {
+                      const colorInfo = productColors.find(c => c.value === variant.color);
+                      return (
+                        <div key={variant.color} className="flex flex-col items-center gap-2">
+                          <div className="flex items-center gap-2">
+                            <div 
+                              className="w-4 h-4 rounded-full border border-border"
+                              style={{ backgroundColor: colorInfo?.hex }}
+                            />
+                            <span className="text-xs">{colorInfo?.label}</span>
+                          </div>
+                          <SmallImageUpload
+                            value={variant.image}
+                            onChange={(img) => updateColorVariantImage(variant.color, img)}
+                            colorLabel={colorInfo?.label || variant.color}
+                          />
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
               )}
             </div>
 
@@ -798,36 +890,71 @@ const AdminProducts = () => {
               id="edit-image"
             />
 
-            {/* Color */}
+            {/* Composition */}
             <div className="space-y-2">
-              <Label>Цвет</Label>
+              <Label htmlFor="edit-composition">Состав</Label>
+              <Textarea
+                id="edit-composition"
+                value={formData.composition}
+                onChange={(e) => setFormData(prev => ({ ...prev, composition: e.target.value }))}
+                placeholder="Например: 90% полиэстер, 10% эластан"
+                rows={2}
+              />
+            </div>
+
+            {/* Color Variants */}
+            <div className="space-y-3">
+              <Label>Цвета товара (нажмите для выбора, загрузите фото для каждого)</Label>
               <div className="flex flex-wrap gap-2">
-                {productColors.map((color) => (
-                  <button
-                    key={color.value}
-                    type="button"
-                    onClick={() => setFormData(prev => ({ 
-                      ...prev, 
-                      color: prev.color === color.value ? "" : color.value 
-                    }))}
-                    className={`w-8 h-8 rounded-full border-2 flex items-center justify-center transition-all hover:scale-110 ${
-                      formData.color === color.value
-                        ? "border-foreground ring-2 ring-foreground ring-offset-1"
-                        : "border-border"
-                    }`}
-                    style={{ backgroundColor: color.hex }}
-                    title={color.label}
-                  >
-                    {formData.color === color.value && (
-                      <Check className={`w-4 h-4 ${color.value === 'white' || color.value === 'cream' || color.value === 'beige' ? 'text-foreground' : 'text-white'}`} />
-                    )}
-                  </button>
-                ))}
+                {productColors.map((color) => {
+                  const isSelected = formData.colorVariants.some(v => v.color === color.value);
+                  return (
+                    <button
+                      key={color.value}
+                      type="button"
+                      onClick={() => toggleColorVariant(color.value)}
+                      className={`w-8 h-8 rounded-full border-2 flex items-center justify-center transition-all hover:scale-110 ${
+                        isSelected
+                          ? "border-foreground ring-2 ring-foreground ring-offset-1"
+                          : "border-border"
+                      }`}
+                      style={{ backgroundColor: color.hex }}
+                      title={color.label}
+                    >
+                      {isSelected && (
+                        <Check className={`w-4 h-4 ${color.value === 'white' || color.value === 'cream' || color.value === 'beige' ? 'text-foreground' : 'text-white'}`} />
+                      )}
+                    </button>
+                  );
+                })}
               </div>
-              {formData.color && (
-                <p className="text-xs text-muted-foreground">
-                  Выбран: {productColors.find(c => c.value === formData.color)?.label}
-                </p>
+              
+              {/* Selected colors with image upload */}
+              {formData.colorVariants.length > 0 && (
+                <div className="space-y-3 mt-4 p-4 bg-muted/50 rounded-lg">
+                  <p className="text-sm font-medium">Загрузите фото для каждого цвета:</p>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                    {formData.colorVariants.map((variant) => {
+                      const colorInfo = productColors.find(c => c.value === variant.color);
+                      return (
+                        <div key={variant.color} className="flex flex-col items-center gap-2">
+                          <div className="flex items-center gap-2">
+                            <div 
+                              className="w-4 h-4 rounded-full border border-border"
+                              style={{ backgroundColor: colorInfo?.hex }}
+                            />
+                            <span className="text-xs">{colorInfo?.label}</span>
+                          </div>
+                          <SmallImageUpload
+                            value={variant.image}
+                            onChange={(img) => updateColorVariantImage(variant.color, img)}
+                            colorLabel={colorInfo?.label || variant.color}
+                          />
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
               )}
             </div>
 

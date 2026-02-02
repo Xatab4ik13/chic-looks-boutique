@@ -63,19 +63,19 @@ export const categories: Category[] = [
   },
   {
     id: "4",
-    name: "Шорты и брюки",
+    name: "Шорты брюки",
     slug: "pants",
     image: pants1,
   },
   {
     id: "5",
-    name: "Пиджаки и жакеты",
+    name: "Пиджаки жакеты",
     slug: "jackets",
     image: jacket1,
   },
   {
     id: "6",
-    name: "Блузы и сорочки",
+    name: "Блузы сорочки",
     slug: "blouses",
     image: blouse1,
   },
@@ -87,6 +87,12 @@ export const categories: Category[] = [
   },
   {
     id: "8",
+    name: "Верхняя одежда",
+    slug: "outerwear",
+    image: jacket2,
+  },
+  {
+    id: "9",
     name: "Аксессуары",
     slug: "accessories",
     image: accessory1,

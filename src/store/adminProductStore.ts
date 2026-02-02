@@ -12,6 +12,7 @@ export const skuPrefixes: Record<string, string> = {
   jackets: 'JK',
   blouses: 'BL',
   suits: 'ST',
+  outerwear: 'OW',
   accessories: 'AC',
 };
 

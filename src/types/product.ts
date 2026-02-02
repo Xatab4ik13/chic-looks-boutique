@@ -33,6 +33,11 @@ export const productColors: { value: ProductColor; label: string; hex: string }[
   { value: "gray", label: "Серый", hex: "#6b7280" },
 ];
 
+export interface ColorVariant {
+  color: ProductColor;
+  image: string;
+}
+
 export interface Product {
   id: string;
   sku: string;
@@ -43,6 +48,8 @@ export interface Product {
   category: string;
   subcategory?: string;
   color?: ProductColor;
+  colorVariants?: ColorVariant[];
+  composition?: string;
   isNew?: boolean;
   isSale?: boolean;
 }

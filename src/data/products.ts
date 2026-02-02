@@ -103,6 +103,7 @@ export const products: Product[] = [
     image: dressMini1,
     category: "dresses",
     subcategory: "mini",
+    color: "burgundy",
     isNew: true,
   },
   {
@@ -113,6 +114,7 @@ export const products: Product[] = [
     image: dressMini2,
     category: "dresses",
     subcategory: "mini",
+    color: "black",
   },
   {
     id: "3",
@@ -123,6 +125,7 @@ export const products: Product[] = [
     image: dressMini3,
     category: "dresses",
     subcategory: "mini",
+    color: "emerald",
     isSale: true,
   },
   // Dresses - Midi
@@ -134,6 +137,7 @@ export const products: Product[] = [
     image: dressMidi1,
     category: "dresses",
     subcategory: "midi",
+    color: "cream",
     isNew: true,
   },
   {
@@ -144,6 +148,7 @@ export const products: Product[] = [
     image: dressMidi2,
     category: "dresses",
     subcategory: "midi",
+    color: "blue",
   },
   {
     id: "6",
@@ -153,6 +158,7 @@ export const products: Product[] = [
     image: dressMidi3,
     category: "dresses",
     subcategory: "midi",
+    color: "pink",
   },
   // Dresses - Maxi
   {
@@ -163,6 +169,7 @@ export const products: Product[] = [
     image: dressMaxi1,
     category: "dresses",
     subcategory: "maxi",
+    color: "black",
     isNew: true,
   },
   {
@@ -173,6 +180,7 @@ export const products: Product[] = [
     image: dressMaxi2,
     category: "dresses",
     subcategory: "maxi",
+    color: "emerald",
   },
   {
     id: "9",
@@ -183,6 +191,7 @@ export const products: Product[] = [
     image: dressMaxi3,
     category: "dresses",
     subcategory: "maxi",
+    color: "burgundy",
     isSale: true,
   },
   // Corsets
@@ -193,6 +202,7 @@ export const products: Product[] = [
     price: 14200,
     image: corset1,
     category: "corsets",
+    color: "black",
     isNew: true,
   },
   {
@@ -202,6 +212,7 @@ export const products: Product[] = [
     price: 15800,
     image: corset2,
     category: "corsets",
+    color: "white",
   },
   {
     id: "12",
@@ -211,6 +222,7 @@ export const products: Product[] = [
     oldPrice: 19800,
     image: corset3,
     category: "corsets",
+    color: "burgundy",
     isSale: true,
   },
   // Skirts

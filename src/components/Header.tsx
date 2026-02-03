@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { X, ShoppingBag, Search } from "lucide-react";
+import { X, ShoppingBag, Search, ChevronDown } from "lucide-react";
 import { useCartStore } from "@/store/cartStore";
 import { categories } from "@/data/products";
 
@@ -8,6 +8,7 @@ const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
   const { openCart, getTotalItems } = useCartStore();
   const totalItems = getTotalItems();
   const location = useLocation();
@@ -21,6 +22,13 @@ const Header = () => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  const handleCategoryClick = (categoryId: string, hasSubcategories: boolean, e: React.MouseEvent) => {
+    if (hasSubcategories) {
+      e.preventDefault();
+      setExpandedCategory(expandedCategory === categoryId ? null : categoryId);
+    }
+  };
 
   return (
     <>
@@ -132,31 +140,59 @@ const Header = () => {
                 className={`menu-item ${isMenuOpen ? "menu-item-visible" : ""}`}
                 style={{ transitionDelay: `${150 + index * 50}ms` }}
               >
-                <Link
-                  to={`/catalog/${category.slug}`}
-                  onClick={() => setIsMenuOpen(false)}
-                  className="group flex items-center justify-between py-5 border-b border-border"
-                >
-                  <span className="text-base group-hover:translate-x-2 transition-transform duration-300">
-                    {category.name}
-                  </span>
-                  <span className="text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity">
-                    →
-                  </span>
-                </Link>
-                {category.subcategories && (
-                  <div className="pl-4 py-3 space-y-2 border-b border-border">
-                    {category.subcategories.map((sub) => (
-                      <Link
-                        key={sub.id}
-                        to={`/catalog/${category.slug}/${sub.slug}`}
-                        onClick={() => setIsMenuOpen(false)}
-                        className="block text-sm text-muted-foreground hover:text-foreground transition-colors py-1"
-                      >
-                        {sub.name}
-                      </Link>
-                    ))}
-                  </div>
+                {category.subcategories ? (
+                  <>
+                    <button
+                      onClick={(e) => handleCategoryClick(category.id, true, e)}
+                      className="group flex items-center justify-between py-5 border-b border-border w-full text-left"
+                    >
+                      <span className="text-base group-hover:translate-x-2 transition-transform duration-300">
+                        {category.name}
+                      </span>
+                      <ChevronDown 
+                        className={`w-4 h-4 text-muted-foreground transition-transform duration-300 ${
+                          expandedCategory === category.id ? "rotate-180" : ""
+                        }`} 
+                        strokeWidth={1.5} 
+                      />
+                    </button>
+                    <div className={`overflow-hidden transition-all duration-300 ${
+                      expandedCategory === category.id ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+                    }`}>
+                      <div className="pl-4 py-3 space-y-2 border-b border-border">
+                        <Link
+                          to={`/catalog/${category.slug}`}
+                          onClick={() => setIsMenuOpen(false)}
+                          className="block text-sm text-muted-foreground hover:text-foreground transition-colors py-1"
+                        >
+                          Все
+                        </Link>
+                        {category.subcategories.map((sub) => (
+                          <Link
+                            key={sub.id}
+                            to={`/catalog/${category.slug}/${sub.slug}`}
+                            onClick={() => setIsMenuOpen(false)}
+                            className="block text-sm text-muted-foreground hover:text-foreground transition-colors py-1"
+                          >
+                            {sub.name}
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <Link
+                    to={`/catalog/${category.slug}`}
+                    onClick={() => setIsMenuOpen(false)}
+                    className="group flex items-center justify-between py-5 border-b border-border"
+                  >
+                    <span className="text-base group-hover:translate-x-2 transition-transform duration-300">
+                      {category.name}
+                    </span>
+                    <span className="text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity">
+                      →
+                    </span>
+                  </Link>
                 )}
               </div>
             ))}
@@ -172,7 +208,7 @@ const Header = () => {
                 className="group flex items-center justify-between py-5 border-b border-border"
               >
                 <span className="text-base group-hover:translate-x-2 transition-transform duration-300">
-                  Доставка и Оплата
+                  Доставка
                 </span>
                 <span className="text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity">
                   →
@@ -189,7 +225,7 @@ const Header = () => {
                 className="group flex items-center justify-between py-5 border-b border-border"
               >
                 <span className="text-base group-hover:translate-x-2 transition-transform duration-300">
-                  Обмен и Возврат
+                  Обмен и возврат
                 </span>
                 <span className="text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity">
                   →

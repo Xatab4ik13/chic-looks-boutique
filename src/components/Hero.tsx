@@ -8,11 +8,11 @@ const Hero = () => {
   return (
     <section>
       {/* Main Hero Banner - Full screen */}
-      <Link to="/catalog?filter=new" className="block relative h-screen max-h-[90vh] lg:max-h-[85vh] overflow-hidden">
+      <Link to="/catalog?filter=new" className="block relative min-h-[60vh] lg:min-h-0 overflow-hidden bg-foreground/5">
         <img
           src={heroMain}
           alt="Новая коллекция"
-          className="w-full h-full object-cover object-center"
+          className="w-full h-auto lg:w-full lg:h-auto object-contain"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-foreground/40 via-transparent to-transparent" />
         

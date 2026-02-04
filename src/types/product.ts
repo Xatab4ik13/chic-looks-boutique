@@ -38,6 +38,9 @@ export interface ColorVariant {
   image: string;
 }
 
+export const allSizes = ["XS", "S", "M", "L", "XL", "XS/S", "S/M", "M/L", "One size"] as const;
+export type ProductSize = typeof allSizes[number];
+
 export interface Product {
   id: string;
   sku: string;
@@ -50,6 +53,7 @@ export interface Product {
   color?: ProductColor;
   colorVariants?: ColorVariant[];
   composition?: string;
+  availableSizes?: ProductSize[];
   isNew?: boolean;
   isSale?: boolean;
 }

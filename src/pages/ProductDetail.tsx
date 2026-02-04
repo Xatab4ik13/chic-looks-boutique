@@ -7,9 +7,9 @@ import CartDrawer from "@/components/CartDrawer";
 import Footer from "@/components/Footer";
 import { products } from "@/data/products";
 import { useCartStore } from "@/store/cartStore";
-import { productColors, ProductColor } from "@/types/product";
+import { productColors, ProductColor, allSizes } from "@/types/product";
 
-const sizes = ["XS", "S", "M", "L", "XL"];
+const defaultSizes = ["XS", "S", "M", "L", "XL"];
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -51,6 +51,14 @@ const ProductDetail = () => {
     return products
       .filter((p) => p.category === product.category && p.id !== product.id)
       .slice(0, 4);
+  }, [product]);
+
+  // Use product's available sizes or default sizes
+  const sizes = useMemo(() => {
+    if (product?.availableSizes && product.availableSizes.length > 0) {
+      return product.availableSizes;
+    }
+    return defaultSizes;
   }, [product]);
 
   if (!product) {

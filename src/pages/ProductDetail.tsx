@@ -1,11 +1,11 @@
 import { useState, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, Minus, Plus, Check } from "lucide-react";
+import { ArrowLeft, Minus, Plus, Check, Loader2 } from "lucide-react";
 import Header from "@/components/Header";
 import CartDrawer from "@/components/CartDrawer";
 import Footer from "@/components/Footer";
-import { products } from "@/data/products";
+import { useProduct } from "@/hooks/useProducts";
 import { useCartStore } from "@/store/cartStore";
 import { productColors, ProductColor, allSizes } from "@/types/product";
 
@@ -21,9 +21,7 @@ const ProductDetail = () => {
   const [addedToCart, setAddedToCart] = useState(false);
   const { addItem, openCart } = useCartStore();
 
-  const product = useMemo(() => {
-    return products.find((p) => p.id === id);
-  }, [id]);
+  const { product, isLoading } = useProduct(id || "");
 
   // Get color variants or fallback to single color
   const colorVariants = useMemo(() => {
@@ -46,12 +44,8 @@ const ProductDetail = () => {
     return product?.image || "";
   }, [product, colorVariants, selectedColorIndex]);
 
-  const relatedProducts = useMemo(() => {
-    if (!product) return [];
-    return products
-      .filter((p) => p.category === product.category && p.id !== product.id)
-      .slice(0, 4);
-  }, [product]);
+  // Related products - for now empty in API mode, we could fetch separately
+  const relatedProducts: typeof product[] = [];
 
   // Use product's available sizes or default sizes
   const sizes = useMemo(() => {
@@ -60,6 +54,14 @@ const ProductDetail = () => {
     }
     return defaultSizes;
   }, [product]);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
+      </div>
+    );
+  }
 
   if (!product) {
     return (

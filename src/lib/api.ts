@@ -1,7 +1,24 @@
 // API клиент для Node.js бэкенда
 // Если VITE_API_URL не установлен, используется Lovable Cloud (Supabase)
 
-const API_URL = import.meta.env.VITE_API_URL || '';
+function resolveApiUrl(): string {
+  // 1) Явно задано при сборке (приоритетно)
+  const fromEnv = (import.meta as any).env?.VITE_API_URL as string | undefined;
+  if (fromEnv && fromEnv.trim()) return fromEnv.trim();
+
+  // 2) Fallback для прод-домена: если открыли voxbrand.ru, то API на api.voxbrand.ru
+  // Это спасает от ситуаций, когда .env не подхватился при сборке.
+  if (typeof window !== "undefined") {
+    const host = window.location.hostname;
+    if (host === "voxbrand.ru" || host.endsWith(".voxbrand.ru")) {
+      return "https://api.voxbrand.ru";
+    }
+  }
+
+  return "";
+}
+
+const API_URL = resolveApiUrl();
 
 // Используется ли внешний API
 export const useExternalApi = !!API_URL;

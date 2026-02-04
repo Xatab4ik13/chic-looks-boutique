@@ -1,13 +1,13 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { SlidersHorizontal, X, ChevronDown } from "lucide-react";
+import { SlidersHorizontal, X, ChevronDown, Loader2 } from "lucide-react";
 import Header from "@/components/Header";
 import CartDrawer from "@/components/CartDrawer";
 import ProductCard from "@/components/ProductCard";
 import Footer from "@/components/Footer";
-import { products, categories } from "@/data/products";
-import { useState } from "react";
+import { categories } from "@/data/products";
+import { useProducts } from "@/hooks/useProducts";
 
 const Catalog = () => {
   const { category: categorySlug, subcategory } = useParams();
@@ -18,25 +18,16 @@ const Catalog = () => {
   const filterType = searchParams.get("filter"); // "new" or "sale"
   const currentCategory = categories.find((c) => c.slug === categorySlug);
 
+  // Загружаем товары из API или локально
+  const { products, isLoading } = useProducts({
+    category: categorySlug,
+    subcategory: subcategory,
+    isNew: filterType === "new" ? true : undefined,
+    isSale: filterType === "sale" ? true : undefined,
+  });
+
   const filteredProducts = useMemo(() => {
     let filtered = [...products];
-
-    // Filter by special filter from URL query params
-    if (filterType === "new") {
-      filtered = filtered.filter((p) => p.isNew);
-    } else if (filterType === "sale") {
-      filtered = filtered.filter((p) => p.isSale);
-    }
-
-    // Filter by category from URL
-    if (categorySlug) {
-      filtered = filtered.filter((p) => p.category === categorySlug);
-    }
-
-    // Filter by subcategory from URL
-    if (subcategory && subcategory !== "all") {
-      filtered = filtered.filter((p) => p.subcategory === subcategory);
-    }
 
     // Sort
     switch (sortBy) {
@@ -52,7 +43,7 @@ const Catalog = () => {
     }
 
     return filtered;
-  }, [categorySlug, subcategory, filterType, sortBy]);
+  }, [products, sortBy]);
 
   // Get page title based on filter
   const getPageTitle = () => {
@@ -97,7 +88,7 @@ const Catalog = () => {
             </button>
 
             <span className="text-sm text-muted-foreground">
-              {filteredProducts.length} товаров
+              {isLoading ? "Загрузка..." : `${filteredProducts.length} товаров`}
             </span>
 
             <div className="relative group">
@@ -130,7 +121,11 @@ const Catalog = () => {
       {/* Products Grid */}
       <section className="py-12 md:py-20">
         <div className="container mx-auto">
-          {filteredProducts.length > 0 ? (
+          {isLoading ? (
+            <div className="flex items-center justify-center py-20">
+              <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
+            </div>
+          ) : filteredProducts.length > 0 ? (
             <motion.div
               layout
               className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8"

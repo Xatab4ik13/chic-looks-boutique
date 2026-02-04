@@ -429,11 +429,17 @@ const AdminProducts = () => {
   };
 
   // Handle delete product
-  const handleDeleteProduct = () => {
+  const handleDeleteProduct = async () => {
     if (!deleteProductId) return;
-    deleteProduct(deleteProductId);
-    toast.success("Товар удалён");
-    setDeleteProductId(null);
+    try {
+      await deleteProduct(deleteProductId);
+      toast.success("Товар удалён");
+    } catch (error) {
+      console.error('Delete error:', error);
+      toast.error("Ошибка удаления товара");
+    } finally {
+      setDeleteProductId(null);
+    }
   };
 
   const formatPrice = (price: number) => {

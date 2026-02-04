@@ -160,13 +160,6 @@ const Header = () => {
                       expandedCategory === category.id ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
                     }`}>
                       <div className="pl-4 py-3 space-y-2 border-b border-border">
-                        <Link
-                          to={`/catalog/${category.slug}`}
-                          onClick={() => setIsMenuOpen(false)}
-                          className="block text-sm text-muted-foreground hover:text-foreground transition-colors py-1"
-                        >
-                          Все
-                        </Link>
                         {category.subcategories.map((sub) => (
                           <Link
                             key={sub.id}

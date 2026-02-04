@@ -73,18 +73,18 @@ const AdminLogin = () => {
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Email field - только если есть внешний API */}
+            {/* Login field - только если есть внешний API */}
             {useExternalApi && (
               <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="login">Логин</Label>
                 <div className="relative">
                   <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                   <Input
-                    id="email"
-                    type="email"
+                    id="login"
+                    type="text"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="admin@vox.ru"
+                    placeholder="voxshop"
                     className="pl-10"
                     autoFocus
                   />

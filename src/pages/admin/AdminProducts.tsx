@@ -247,14 +247,24 @@ const AdminProducts = () => {
   }, [formData.category]);
 
   // Handle category change in form - auto-suggest SKU
-  const handleCategoryChange = (category: string) => {
-    const nextSku = getNextSku(category);
+  const handleCategoryChange = async (category: string) => {
+    // Сначала обновляем категорию
     setFormData(prev => ({
       ...prev,
       category,
       subcategory: "",
-      sku: nextSku,
     }));
+    
+    // Затем получаем SKU асинхронно
+    try {
+      const nextSku = await getNextSku(category);
+      setFormData(prev => ({
+        ...prev,
+        sku: nextSku,
+      }));
+    } catch (error) {
+      console.error('Error getting next SKU:', error);
+    }
   };
 
   // Reset form

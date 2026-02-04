@@ -1,0 +1,18 @@
+# Папка данных SQLite
+data/
+
+# Загруженные файлы
+uploads/
+
+# Логи
+logs/
+
+# Переменные окружения
+.env
+
+# Node modules
+node_modules/
+
+# OS files
+.DS_Store
+Thumbs.db

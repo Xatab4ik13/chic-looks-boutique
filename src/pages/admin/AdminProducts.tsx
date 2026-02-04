@@ -1,4 +1,4 @@
-import { useState, useMemo, useRef } from "react";
+import { useEffect, useState, useMemo, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   Plus, 
@@ -204,7 +204,12 @@ const ImageUploadField = ({
 };
 
 const AdminProducts = () => {
-  const { products, addProduct, deleteProduct, updateProduct, getNextSku } = useAdminProductStore();
+  const { products, fetchProducts, addProduct, deleteProduct, updateProduct, getNextSku } = useAdminProductStore();
+
+  useEffect(() => {
+    // В режиме внешнего API стор сам решит, нужно ли грузить
+    void fetchProducts();
+  }, [fetchProducts]);
   
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");

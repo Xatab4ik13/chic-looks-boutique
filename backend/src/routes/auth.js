@@ -2,11 +2,12 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const { db } = require('../database/init');
 const { generateToken, authenticateToken } = require('../middleware/auth');
+const { loginLimiter } = require('../middleware/rateLimiter');
 
 const router = express.Router();
 
-// POST /api/auth/login - Вход админа
-router.post('/login', (req, res) => {
+// POST /api/auth/login - Вход админа (с rate limiting: 5 попыток/мин)
+router.post('/login', loginLimiter, (req, res) => {
   try {
     const { email, password } = req.body;
 

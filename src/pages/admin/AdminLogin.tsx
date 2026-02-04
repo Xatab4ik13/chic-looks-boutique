@@ -1,38 +1,51 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Lock, Eye, EyeOff, AlertCircle } from "lucide-react";
+import { Lock, Eye, EyeOff, AlertCircle, Mail } from "lucide-react";
 import { useAdminAuthStore } from "@/store/adminAuthStore";
+import { useExternalApi } from "@/lib/api";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 
 const AdminLogin = () => {
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const { login } = useAdminAuthStore();
+  const { login, isLoading, isAuthenticated, checkAuth } = useAdminAuthStore();
   const navigate = useNavigate();
+
+  // Проверяем авторизацию при загрузке
+  useEffect(() => {
+    if (useExternalApi) {
+      checkAuth();
+    }
+  }, [checkAuth]);
+
+  // Редирект если уже авторизован
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/admin");
+    }
+  }, [isAuthenticated, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-    setIsLoading(true);
 
-    // Имитация задержки для UX
-    await new Promise((resolve) => setTimeout(resolve, 500));
-
-    const success = login(password);
+    // Если есть внешний API — используем email+password
+    // Иначе — только пароль (локальный режим)
+    const success = useExternalApi 
+      ? await login(email, password)
+      : await login(password);
     
     if (success) {
       navigate("/admin");
     } else {
-      setError("Неверный пароль");
+      setError(useExternalApi ? "Неверный email или пароль" : "Неверный пароль");
       setPassword("");
     }
-    
-    setIsLoading(false);
   };
 
   return (
@@ -60,8 +73,29 @@ const AdminLogin = () => {
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Email field - только если есть внешний API */}
+            {useExternalApi && (
+              <div className="space-y-2">
+                <Label htmlFor="email">Email</Label>
+                <div className="relative">
+                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                  <Input
+                    id="email"
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="admin@vox.ru"
+                    className="pl-10"
+                    autoFocus
+                  />
+                </div>
+              </div>
+            )}
+
             <div className="space-y-2">
-              <Label htmlFor="password">Пароль администратора</Label>
+              <Label htmlFor="password">
+                {useExternalApi ? "Пароль" : "Пароль администратора"}
+              </Label>
               <div className="relative">
                 <Input
                   id="password"
@@ -70,7 +104,7 @@ const AdminLogin = () => {
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Введите пароль"
                   className="pr-10"
-                  autoFocus
+                  autoFocus={!useExternalApi}
                 />
                 <button
                   type="button"
@@ -100,7 +134,7 @@ const AdminLogin = () => {
             <Button
               type="submit"
               className="w-full"
-              disabled={!password || isLoading}
+              disabled={(!password) || (useExternalApi && !email) || isLoading}
             >
               {isLoading ? "Вход..." : "Войти"}
             </Button>

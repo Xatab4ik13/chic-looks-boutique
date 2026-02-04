@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { ShoppingBag, X, Check } from "lucide-react";
-import { Product } from "@/types/product";
+import { Product, allSizes } from "@/types/product";
 import { useCartStore } from "@/store/cartStore";
 
 interface ProductCardProps {
@@ -10,9 +10,13 @@ interface ProductCardProps {
   index?: number;
 }
 
-const sizes = ["XS", "S", "M", "L", "XL"];
+const defaultSizes = ["XS", "S", "M", "L", "XL"];
 
 const ProductCard = ({ product, index = 0 }: ProductCardProps) => {
+  // Use product's available sizes or default sizes
+  const sizes = product.availableSizes && product.availableSizes.length > 0 
+    ? product.availableSizes 
+    : defaultSizes;
   const [isHovered, setIsHovered] = useState(false);
   const [showSizeSelector, setShowSizeSelector] = useState(false);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);

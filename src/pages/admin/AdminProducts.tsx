@@ -15,7 +15,7 @@ import {
   Image as ImageIcon
 } from "lucide-react";
 import { useAdminProductStore, categories, skuPrefixes } from "@/store/adminProductStore";
-import { Product, productColors, ProductColor, ColorVariant } from "@/types/product";
+import { Product, productColors, ProductColor, ColorVariant, allSizes, ProductSize } from "@/types/product";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -224,6 +224,7 @@ const AdminProducts = () => {
     image: "",
     composition: "",
     colorVariants: [] as ColorVariant[],
+    availableSizes: [] as ProductSize[],
     isNew: false,
     isSale: false,
   });
@@ -268,6 +269,7 @@ const AdminProducts = () => {
       image: "",
       composition: "",
       colorVariants: [],
+      availableSizes: [],
       isNew: false,
       isSale: false,
     });
@@ -320,6 +322,7 @@ const AdminProducts = () => {
       image: product.image,
       composition: product.composition || "",
       colorVariants: product.colorVariants || [],
+      availableSizes: product.availableSizes || [],
       isNew: product.isNew || false,
       isSale: product.isSale || false,
     });
@@ -350,6 +353,7 @@ const AdminProducts = () => {
       composition: formData.composition || undefined,
       colorVariants: formData.colorVariants.length > 0 ? formData.colorVariants : undefined,
       color: formData.colorVariants.length > 0 ? formData.colorVariants[0].color : undefined,
+      availableSizes: formData.availableSizes.length > 0 ? formData.availableSizes : undefined,
       isNew: formData.isNew,
       isSale: formData.isSale,
     });
@@ -385,6 +389,7 @@ const AdminProducts = () => {
       composition: formData.composition || undefined,
       colorVariants: formData.colorVariants.length > 0 ? formData.colorVariants : undefined,
       color: formData.colorVariants.length > 0 ? formData.colorVariants[0].color : undefined,
+      availableSizes: formData.availableSizes.length > 0 ? formData.availableSizes : undefined,
       isNew: formData.isNew,
       isSale: formData.isSale,
     });
@@ -393,6 +398,24 @@ const AdminProducts = () => {
     setIsEditDialogOpen(false);
     setEditingProduct(null);
     resetForm();
+  };
+
+  // Toggle size selection
+  const toggleSize = (size: ProductSize) => {
+    setFormData(prev => {
+      const exists = prev.availableSizes.includes(size);
+      if (exists) {
+        return {
+          ...prev,
+          availableSizes: prev.availableSizes.filter(s => s !== size)
+        };
+      } else {
+        return {
+          ...prev,
+          availableSizes: [...prev.availableSizes, size]
+        };
+      }
+    });
   };
 
   // Handle delete product
@@ -748,6 +771,35 @@ const AdminProducts = () => {
               )}
             </div>
 
+            {/* Available Sizes */}
+            <div className="space-y-3">
+              <Label>Доступные размеры (если не выбраны — будут стандартные XS-XL)</Label>
+              <div className="flex flex-wrap gap-2">
+                {allSizes.map((size) => {
+                  const isSelected = formData.availableSizes.includes(size);
+                  return (
+                    <button
+                      key={size}
+                      type="button"
+                      onClick={() => toggleSize(size)}
+                      className={`px-3 py-2 border text-sm font-medium transition-all ${
+                        isSelected
+                          ? "border-foreground bg-foreground text-background"
+                          : "border-border hover:border-foreground"
+                      }`}
+                    >
+                      {size}
+                    </button>
+                  );
+                })}
+              </div>
+              {formData.availableSizes.length > 0 && (
+                <p className="text-xs text-muted-foreground">
+                  Выбрано: {formData.availableSizes.join(", ")}
+                </p>
+              )}
+            </div>
+
             <div className="flex items-center gap-6">
               <div className="flex items-center gap-2">
                 <Checkbox
@@ -955,6 +1007,35 @@ const AdminProducts = () => {
                     })}
                   </div>
                 </div>
+              )}
+            </div>
+
+            {/* Available Sizes */}
+            <div className="space-y-3">
+              <Label>Доступные размеры (если не выбраны — будут стандартные XS-XL)</Label>
+              <div className="flex flex-wrap gap-2">
+                {allSizes.map((size) => {
+                  const isSelected = formData.availableSizes.includes(size);
+                  return (
+                    <button
+                      key={size}
+                      type="button"
+                      onClick={() => toggleSize(size)}
+                      className={`px-3 py-2 border text-sm font-medium transition-all ${
+                        isSelected
+                          ? "border-foreground bg-foreground text-background"
+                          : "border-border hover:border-foreground"
+                      }`}
+                    >
+                      {size}
+                    </button>
+                  );
+                })}
+              </div>
+              {formData.availableSizes.length > 0 && (
+                <p className="text-xs text-muted-foreground">
+                  Выбрано: {formData.availableSizes.join(", ")}
+                </p>
               )}
             </div>
 

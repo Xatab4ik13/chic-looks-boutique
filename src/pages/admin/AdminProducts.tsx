@@ -311,7 +311,8 @@ const AdminProducts = () => {
       toast.success("Товар удалён");
     } catch (error) {
       console.error('Delete error:', error);
-      toast.error("Ошибка удаления товара");
+      const message = error instanceof Error ? error.message : "Ошибка удаления товара";
+      toast.error(message);
     } finally {
       setDeleteProductId(null);
     }

@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { ShoppingBag, X, Check } from "lucide-react";
+import { ShoppingBag, X, Check, Ruler } from "lucide-react";
 import { Product, allSizes } from "@/types/product";
 import { useCartStore } from "@/store/cartStore";
+import SizeChartPopover from "@/components/SizeChartPopover";
 
 interface ProductCardProps {
   product: Product;
@@ -132,12 +133,23 @@ const ProductCard = ({ product, index = 0 }: ProductCardProps) => {
               className="absolute inset-0 bg-background/95 backdrop-blur-sm flex flex-col justify-center items-center p-4"
               onClick={(e) => e.stopPropagation()}
             >
-              <button
-                onClick={handleCloseSizeSelector}
-                className="absolute top-3 right-3 p-1 hover:bg-muted rounded-full transition-colors"
-              >
-                <X className="w-5 h-5" />
-              </button>
+              <div className="absolute top-3 right-3 flex items-center gap-1">
+                <SizeChartPopover>
+                  <button
+                    onClick={(e) => e.stopPropagation()}
+                    className="p-1 hover:bg-muted rounded-full transition-colors"
+                    title="Размерная сетка"
+                  >
+                    <Ruler className="w-5 h-5" />
+                  </button>
+                </SizeChartPopover>
+                <button
+                  onClick={handleCloseSizeSelector}
+                  className="p-1 hover:bg-muted rounded-full transition-colors"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
               
               <p className="text-xs uppercase tracking-wider text-muted-foreground mb-4">
                 Выберите размер

@@ -6,6 +6,7 @@ import Header from "@/components/Header";
 import CartDrawer from "@/components/CartDrawer";
 import Footer from "@/components/Footer";
 import ProductGallery from "@/components/ProductGallery";
+import SizeChartPopover from "@/components/SizeChartPopover";
 import { useProduct } from "@/hooks/useProducts";
 import { useCartStore } from "@/store/cartStore";
 import { productColors, ProductColor, allSizes } from "@/types/product";
@@ -312,9 +313,11 @@ const ProductDetail = () => {
                   <h3 className="text-muted-foreground uppercase text-sm tracking-wider">
                     Размер
                   </h3>
-                  <button className="text-sm text-muted-foreground hover:text-foreground underline underline-offset-4 transition-colors">
-                    Таблица размеров
-                  </button>
+                  <SizeChartPopover>
+                    <button className="text-sm text-muted-foreground hover:text-foreground underline underline-offset-4 transition-colors">
+                      Таблица размеров
+                    </button>
+                  </SizeChartPopover>
                 </div>
                 <div className="flex flex-wrap gap-3">
                   {sizes.map((size, index) => (

@@ -9,12 +9,8 @@ const loginLimiter = rateLimit({
   },
   standardHeaders: true,
   legacyHeaders: false,
-  // Не валидируем заголовки — trust proxy настроен в index.js
-  validate: { xForwardedForHeader: false },
-  keyGenerator: (req) => {
-    // Используем IP + email для более точного ограничения
-    return `${req.ip}-${req.body?.email || 'unknown'}`;
-  },
+  // Отключаем все валидации для совместимости с nginx proxy
+  validate: false,
   skipSuccessfulRequests: false,
 });
 
@@ -27,7 +23,8 @@ const apiLimiter = rateLimit({
   },
   standardHeaders: true,
   legacyHeaders: false,
-  validate: { xForwardedForHeader: false },
+  // Отключаем все валидации для совместимости с nginx proxy
+  validate: false,
 });
 
 module.exports = { loginLimiter, apiLimiter };

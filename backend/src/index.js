@@ -14,6 +14,9 @@ const { initDatabase } = require('./database/init');
 const app = express();
 const PORT = process.env.PORT || 3001;
 
+// Доверяем прокси (nginx) для корректного определения IP
+app.set('trust proxy', 1);
+
 // Middleware
 app.use(cors({
   origin: process.env.FRONTEND_URL || '*',

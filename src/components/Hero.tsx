@@ -3,22 +3,18 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { Skeleton } from "@/components/ui/skeleton";
 
-// Hero images with WebP and JPG fallback
-const heroImages = {
-  main: { webp: "/images/hero-main.webp", jpg: "/images/hero-main.jpg" },
-  slide2: { webp: "/images/hero-slide-2.webp", jpg: "/images/hero-slide-2.jpg" },
-  slide3: { webp: "/images/hero-slide-3.webp", jpg: "/images/hero-slide-3.jpg" },
-};
+// Use public folder paths for instant preloading via index.html
+const heroMain = "/images/hero-main.jpg";
+const heroSlide2 = "/images/hero-slide-2.jpg";
+const heroSlide3 = "/images/hero-slide-3.jpg";
 
 const HeroImage = ({ 
-  webp,
-  jpg,
+  src, 
   alt, 
   priority = false,
   className = ""
 }: { 
-  webp: string;
-  jpg: string;
+  src: string; 
   alt: string; 
   priority?: boolean;
   className?: string;
@@ -31,21 +27,18 @@ const HeroImage = ({
       {!isLoaded && !hasError && (
         <Skeleton className="absolute inset-0 w-full h-full rounded-none" />
       )}
-      <picture>
-        <source srcSet={webp} type="image/webp" />
-        <img
-          src={jpg}
-          alt={alt}
-          className={`w-full h-full object-cover transition-opacity duration-300 ${
-            isLoaded ? "opacity-100" : "opacity-0"
-          } ${className}`}
-          onLoad={() => setIsLoaded(true)}
-          onError={() => setHasError(true)}
-          loading={priority ? "eager" : "lazy"}
-          fetchPriority={priority ? "high" : "auto"}
-          decoding="async"
-        />
-      </picture>
+      <img
+        src={src}
+        alt={alt}
+        className={`w-full h-full object-cover transition-opacity duration-300 ${
+          isLoaded ? "opacity-100" : "opacity-0"
+        } ${className}`}
+        onLoad={() => setIsLoaded(true)}
+        onError={() => setHasError(true)}
+        loading={priority ? "eager" : "lazy"}
+        fetchPriority={priority ? "high" : "auto"}
+        decoding="async"
+      />
     </div>
   );
 };
@@ -56,8 +49,7 @@ const Hero = () => {
       {/* Main Hero Banner - Full screen */}
       <Link to="/catalog?filter=new" className="block relative h-screen overflow-hidden group">
         <HeroImage
-          webp={heroImages.main.webp}
-          jpg={heroImages.main.jpg}
+          src={heroMain}
           alt="Новая коллекция"
           priority
         />
@@ -88,8 +80,7 @@ const Hero = () => {
               className="h-full"
             >
               <HeroImage
-                webp={heroImages.slide2.webp}
-                jpg={heroImages.slide2.jpg}
+                src={heroSlide2}
                 alt="Каталог"
                 className="transition-transform duration-700 group-hover:scale-105"
               />
@@ -112,8 +103,7 @@ const Hero = () => {
               className="h-full"
             >
               <HeroImage
-                webp={heroImages.slide3.webp}
-                jpg={heroImages.slide3.jpg}
+                src={heroSlide3}
                 alt="Скидки"
                 className="transition-transform duration-700 group-hover:scale-105"
               />

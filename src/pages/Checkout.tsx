@@ -11,7 +11,7 @@ import CartDrawer from "@/components/CartDrawer";
 import { useCartStore } from "@/store/cartStore";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { supabase } from "@/integrations/supabase/client";
+import { ordersApi } from "@/lib/api";
 import { toast } from "sonner";
 
 const checkoutSchema = z.object({
@@ -96,16 +96,7 @@ const Checkout = () => {
     };
 
     try {
-      const { error } = await supabase.functions.invoke("send-order-telegram", {
-        body: orderData,
-      });
-
-      if (error) {
-        console.error("Order error:", error);
-        toast.error("Ошибка при оформлении заказа. Попробуйте позже.");
-        setIsSubmitting(false);
-        return;
-      }
+      await ordersApi.create(orderData);
 
       clearCart();
       toast.success("Заказ успешно оформлен! Мы свяжемся с вами в ближайшее время.");

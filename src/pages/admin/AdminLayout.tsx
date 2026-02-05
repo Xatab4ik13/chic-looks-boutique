@@ -1,11 +1,33 @@
+import { useEffect } from "react";
 import { NavLink, Outlet, useNavigate, Navigate } from "react-router-dom";
 import { Package, LayoutDashboard, ArrowLeft, Settings, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAdminAuthStore } from "@/store/adminAuthStore";
+import { useExternalApi } from "@/lib/api";
+import { toast } from "sonner";
 
 const AdminLayout = () => {
   const navigate = useNavigate();
-  const { isAuthenticated, logout } = useAdminAuthStore();
+  const { isAuthenticated, logout, checkAuth } = useAdminAuthStore();
+
+  // Проверяем сессию при входе в админку (особенно после обновления страницы)
+  useEffect(() => {
+    if (useExternalApi) {
+      void checkAuth();
+    }
+  }, [checkAuth]);
+
+  // Если API вернул 401/403 — разлогиниваем и отправляем на /admin/login
+  useEffect(() => {
+    const onUnauthorized = () => {
+      logout();
+      toast.error("Сессия истекла. Войдите заново.");
+      navigate("/admin/login", { replace: true });
+    };
+
+    window.addEventListener("vox-admin-unauthorized", onUnauthorized as EventListener);
+    return () => window.removeEventListener("vox-admin-unauthorized", onUnauthorized as EventListener);
+  }, [logout, navigate]);
 
   // Редирект на страницу входа если не авторизован
   if (!isAuthenticated) {

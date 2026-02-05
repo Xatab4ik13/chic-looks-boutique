@@ -52,6 +52,19 @@ async function request<T>(endpoint: string, options: RequestOptions = {}): Promi
   
   if (!response.ok) {
     const error = await response.json().catch(() => ({ error: 'Ошибка сервера' }));
+
+    // Если токен протух / неверный — сбрасываем сессию админа и сигналим UI
+    if (response.status === 401 || response.status === 403) {
+      localStorage.removeItem('vox-admin-token');
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(
+          new CustomEvent('vox-admin-unauthorized', {
+            detail: { status: response.status, endpoint },
+          })
+        );
+      }
+    }
+
     throw new Error(error.error || `HTTP error ${response.status}`);
   }
 

@@ -46,65 +46,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
-
-// Small Image Upload for Color Variants
-const SmallImageUpload = ({ 
-  value, 
-  onChange,
-  colorLabel
-}: { 
-  value: string; 
-  onChange: (image: string) => void;
-  colorLabel: string;
-}) => {
-  const fileInputRef = useRef<HTMLInputElement>(null);
-
-  const handleFileChange = (file: File | null) => {
-    if (!file) return;
-    if (!file.type.startsWith('image/')) {
-      toast.error("Выберите файл изображения");
-      return;
-    }
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const result = e.target?.result as string;
-      onChange(result);
-    };
-    reader.readAsDataURL(file);
-  };
-
-  return (
-    <div className="relative">
-      {value ? (
-        <div className="relative w-16 h-20 rounded overflow-hidden border border-border">
-          <img src={value} alt={colorLabel} className="w-full h-full object-cover" />
-          <button
-            type="button"
-            onClick={() => onChange("")}
-            className="absolute -top-1 -right-1 p-0.5 rounded-full bg-destructive text-white"
-          >
-            <X className="w-3 h-3" />
-          </button>
-        </div>
-      ) : (
-        <button
-          type="button"
-          onClick={() => fileInputRef.current?.click()}
-          className="w-16 h-20 border-2 border-dashed border-border rounded flex items-center justify-center hover:border-primary/50 transition-colors"
-        >
-          <Upload className="w-4 h-4 text-muted-foreground" />
-        </button>
-      )}
-      <input
-        ref={fileInputRef}
-        type="file"
-        accept="image/*"
-        onChange={(e) => handleFileChange(e.target.files?.[0] || null)}
-        className="hidden"
-      />
-    </div>
-  );
-};
+import ColorVariantImages from "@/components/admin/ColorVariantImages";
 
 // Image Upload Component
 const ImageUploadField = ({ 
@@ -302,18 +244,18 @@ const AdminProducts = () => {
       } else {
         return {
           ...prev,
-          colorVariants: [...prev.colorVariants, { color: colorValue, image: "" }]
+          colorVariants: [...prev.colorVariants, { color: colorValue, image: "", images: [] }]
         };
       }
     });
   };
 
-  // Update color variant image
-  const updateColorVariantImage = (colorValue: ProductColor, image: string) => {
+  // Update color variant images (array)
+  const updateColorVariantImages = (colorValue: ProductColor, images: string[]) => {
     setFormData(prev => ({
       ...prev,
       colorVariants: prev.colorVariants.map(v => 
-        v.color === colorValue ? { ...v, image } : v
+        v.color === colorValue ? { ...v, images, image: images[0] || "" } : v
       )
     }));
   };
@@ -765,29 +707,16 @@ const AdminProducts = () => {
               
               {/* Selected colors with image upload */}
               {formData.colorVariants.length > 0 && (
-                <div className="space-y-3 mt-4 p-4 bg-muted/50 rounded-lg">
-                  <p className="text-sm font-medium">Загрузите фото для каждого цвета:</p>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                    {formData.colorVariants.map((variant) => {
-                      const colorInfo = productColors.find(c => c.value === variant.color);
-                      return (
-                        <div key={variant.color} className="flex flex-col items-center gap-2">
-                          <div className="flex items-center gap-2">
-                            <div 
-                              className="w-4 h-4 rounded-full border border-border"
-                              style={{ backgroundColor: colorInfo?.hex }}
-                            />
-                            <span className="text-xs">{colorInfo?.label}</span>
-                          </div>
-                          <SmallImageUpload
-                            value={variant.image}
-                            onChange={(img) => updateColorVariantImage(variant.color, img)}
-                            colorLabel={colorInfo?.label || variant.color}
-                          />
-                        </div>
-                      );
-                    })}
-                  </div>
+                <div className="space-y-4 mt-4">
+                  <p className="text-sm font-medium">Загрузите до 5 фото для каждого цвета:</p>
+                  {formData.colorVariants.map((variant) => (
+                    <ColorVariantImages
+                      key={variant.color}
+                      color={variant.color}
+                      images={variant.images || (variant.image ? [variant.image] : [])}
+                      onImagesChange={(images) => updateColorVariantImages(variant.color, images)}
+                    />
+                  ))}
                 </div>
               )}
             </div>
@@ -1004,29 +933,16 @@ const AdminProducts = () => {
               
               {/* Selected colors with image upload */}
               {formData.colorVariants.length > 0 && (
-                <div className="space-y-3 mt-4 p-4 bg-muted/50 rounded-lg">
-                  <p className="text-sm font-medium">Загрузите фото для каждого цвета:</p>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                    {formData.colorVariants.map((variant) => {
-                      const colorInfo = productColors.find(c => c.value === variant.color);
-                      return (
-                        <div key={variant.color} className="flex flex-col items-center gap-2">
-                          <div className="flex items-center gap-2">
-                            <div 
-                              className="w-4 h-4 rounded-full border border-border"
-                              style={{ backgroundColor: colorInfo?.hex }}
-                            />
-                            <span className="text-xs">{colorInfo?.label}</span>
-                          </div>
-                          <SmallImageUpload
-                            value={variant.image}
-                            onChange={(img) => updateColorVariantImage(variant.color, img)}
-                            colorLabel={colorInfo?.label || variant.color}
-                          />
-                        </div>
-                      );
-                    })}
-                  </div>
+                <div className="space-y-4 mt-4">
+                  <p className="text-sm font-medium">Загрузите до 5 фото для каждого цвета:</p>
+                  {formData.colorVariants.map((variant) => (
+                    <ColorVariantImages
+                      key={variant.color}
+                      color={variant.color}
+                      images={variant.images || (variant.image ? [variant.image] : [])}
+                      onImagesChange={(images) => updateColorVariantImages(variant.color, images)}
+                    />
+                  ))}
                 </div>
               )}
             </div>

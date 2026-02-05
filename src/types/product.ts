@@ -35,7 +35,8 @@ export const productColors: { value: ProductColor; label: string; hex: string }[
 
 export interface ColorVariant {
   color: ProductColor;
-  image: string;
+  image: string; // Legacy single image (backwards compatibility)
+  images?: string[]; // Multiple images (up to 5)
 }
 
 export const allSizes = ["XS", "S", "M", "L", "XL", "XS/S", "S/M", "M/L", "One size"] as const;

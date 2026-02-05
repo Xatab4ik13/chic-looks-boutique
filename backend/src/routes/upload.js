@@ -101,7 +101,31 @@ router.post('/base64', authenticateToken, (req, res) => {
   }
 });
 
-// Error handler for multer
+// DELETE /api/upload/:filename - Удалить изображение
+router.delete('/:filename', authenticateToken, (req, res) => {
+  try {
+    const { filename } = req.params;
+    
+    // Защита от path traversal
+    if (filename.includes('..') || filename.includes('/') || filename.includes('\\')) {
+      return res.status(400).json({ error: 'Недопустимое имя файла' });
+    }
+
+    const filePath = path.join(uploadDir, filename);
+    
+    if (!fs.existsSync(filePath)) {
+      return res.status(404).json({ error: 'Файл не найден' });
+    }
+
+    fs.unlinkSync(filePath);
+    
+    res.json({ message: 'Файл удалён', filename });
+  } catch (error) {
+    console.error('Delete file error:', error);
+    res.status(500).json({ error: 'Ошибка удаления файла' });
+  }
+});
+
 router.use((err, req, res, next) => {
   if (err instanceof multer.MulterError) {
     if (err.code === 'LIMIT_FILE_SIZE') {

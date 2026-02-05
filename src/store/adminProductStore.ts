@@ -41,8 +41,8 @@ export const useAdminProductStore = create<AdminProductStore>()(
         
         set({ isLoading: true, error: null });
         try {
-          const products = await productsApi.getAll();
-          set({ products, isLoading: false });
+          const data = await productsApi.getAll();
+          set({ products: data.products, isLoading: false });
         } catch (error) {
           console.error('Fetch products error:', error);
           set({ error: 'Ошибка загрузки товаров', isLoading: false });

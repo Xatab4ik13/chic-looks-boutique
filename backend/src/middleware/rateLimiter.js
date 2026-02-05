@@ -7,13 +7,15 @@ const loginLimiter = rateLimit({
   message: { 
     error: 'Слишком много попыток входа. Попробуйте через минуту.' 
   },
-  standardHeaders: true, // Возвращает rate limit info в заголовках `RateLimit-*`
-  legacyHeaders: false, // Отключает `X-RateLimit-*` заголовки
+  standardHeaders: true,
+  legacyHeaders: false,
+  // Не валидируем заголовки — trust proxy настроен в index.js
+  validate: { xForwardedForHeader: false },
   keyGenerator: (req) => {
     // Используем IP + email для более точного ограничения
     return `${req.ip}-${req.body?.email || 'unknown'}`;
   },
-  skipSuccessfulRequests: false, // Считаем все запросы
+  skipSuccessfulRequests: false,
 });
 
 // Общий rate limiter для API: 100 запросов в минуту
@@ -25,6 +27,7 @@ const apiLimiter = rateLimit({
   },
   standardHeaders: true,
   legacyHeaders: false,
+  validate: { xForwardedForHeader: false },
 });
 
 module.exports = { loginLimiter, apiLimiter };

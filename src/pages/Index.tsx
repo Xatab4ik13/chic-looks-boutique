@@ -5,7 +5,7 @@ import Header from "@/components/Header";
 import CartDrawer from "@/components/CartDrawer";
 import Hero from "@/components/Hero";
 import Footer from "@/components/Footer";
-import { products } from "@/data/products";
+import aboutBrandImage from "@/assets/about-brand.jpg";
 
 const Index = () => {
   return (
@@ -55,7 +55,7 @@ const Index = () => {
               <div className="relative">
                 <div className="aspect-[4/5] overflow-hidden">
                   <img
-                    src={products[2].image}
+                    src={aboutBrandImage}
                     alt="About VOX"
                     className="w-full h-full object-cover"
                   />

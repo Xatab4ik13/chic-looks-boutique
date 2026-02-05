@@ -6,8 +6,7 @@ function resolveApiUrl(): string {
   const fromEnv = (import.meta as any).env?.VITE_API_URL as string | undefined;
   if (fromEnv && fromEnv.trim()) return fromEnv.trim();
 
-  // 2) Fallback для прод-домена: если открыли voxbrand.ru, то API на api.voxbrand.ru
-  // Это спасает от ситуаций, когда .env не подхватился при сборке.
+  // 2) Для voxbrand.ru (прод) — API на api.voxbrand.ru
   if (typeof window !== "undefined") {
     const host = window.location.hostname;
     if (host === "voxbrand.ru" || host.endsWith(".voxbrand.ru")) {
@@ -15,7 +14,9 @@ function resolveApiUrl(): string {
     }
   }
 
-  return "";
+  // 3) Для Lovable preview и любых других окружений — тоже используем прод API
+  // Это позволяет тестировать в preview с реальными данными
+  return "https://api.voxbrand.ru";
 }
 
 const API_URL = resolveApiUrl();

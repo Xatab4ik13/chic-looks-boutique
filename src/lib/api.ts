@@ -111,6 +111,8 @@ export const productsApi = {
     search?: string;
     isNew?: boolean;
     isSale?: boolean;
+    limit?: number;
+    offset?: number;
   }) => {
     const searchParams = new URLSearchParams();
     if (params?.category) searchParams.set('category', params.category);
@@ -118,9 +120,11 @@ export const productsApi = {
     if (params?.search) searchParams.set('search', params.search);
     if (params?.isNew) searchParams.set('isNew', 'true');
     if (params?.isSale) searchParams.set('isSale', 'true');
+    if (params?.limit) searchParams.set('limit', String(params.limit));
+    if (params?.offset) searchParams.set('offset', String(params.offset));
     
     const query = searchParams.toString();
-    return request<Product[]>(`/api/products${query ? `?${query}` : ''}`);
+    return request<{ products: Product[]; total: number; limit: number; offset: number }>(`/api/products${query ? `?${query}` : ''}`);
   },
 
   getById: async (id: string) => {

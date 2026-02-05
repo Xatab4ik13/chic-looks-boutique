@@ -64,40 +64,59 @@ const deleteFile = (filename) => {
   return false;
 };
 
-// GET /api/products - Получить все товары
+// GET /api/products - Получить все товары (с пагинацией)
 router.get('/', (req, res) => {
   try {
-    const { category, subcategory, search, isNew, isSale } = req.query;
+    const { category, subcategory, search, isNew, isSale, limit, offset } = req.query;
 
     let query = 'SELECT * FROM products WHERE 1=1';
+    let countQuery = 'SELECT COUNT(*) as total FROM products WHERE 1=1';
     const params = [];
+    const countParams = [];
 
     if (category) {
       query += ' AND category = ?';
+      countQuery += ' AND category = ?';
       params.push(category);
+      countParams.push(category);
     }
 
     if (subcategory && subcategory !== 'all') {
       query += ' AND subcategory = ?';
+      countQuery += ' AND subcategory = ?';
       params.push(subcategory);
+      countParams.push(subcategory);
     }
 
     if (search) {
       query += ' AND (name LIKE ? OR sku LIKE ?)';
+      countQuery += ' AND (name LIKE ? OR sku LIKE ?)';
       params.push(`%${search}%`, `%${search}%`);
+      countParams.push(`%${search}%`, `%${search}%`);
     }
 
     if (isNew === 'true') {
       query += ' AND is_new = 1';
+      countQuery += ' AND is_new = 1';
     }
 
     if (isSale === 'true') {
       query += ' AND is_sale = 1';
+      countQuery += ' AND is_sale = 1';
     }
 
     query += ' ORDER BY created_at DESC';
 
+    // Пагинация
+    const pageLimit = parseInt(limit) || 0; // 0 = без лимита
+    const pageOffset = parseInt(offset) || 0;
+
+    if (pageLimit > 0) {
+      query += ` LIMIT ${pageLimit} OFFSET ${pageOffset}`;
+    }
+
     const products = db.prepare(query).all(...params);
+    const { total } = db.prepare(countQuery).get(...countParams);
 
     // Преобразуем JSON поля
     const formattedProducts = products.map(p => ({
@@ -109,7 +128,12 @@ router.get('/', (req, res) => {
       isSale: Boolean(p.is_sale),
     }));
 
-    res.json(formattedProducts);
+    res.json({
+      products: formattedProducts,
+      total,
+      limit: pageLimit,
+      offset: pageOffset,
+    });
   } catch (error) {
     console.error('Get products error:', error);
     res.status(500).json({ error: 'Ошибка сервера' });

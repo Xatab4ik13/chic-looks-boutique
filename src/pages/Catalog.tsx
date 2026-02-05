@@ -6,44 +6,69 @@ import Header from "@/components/Header";
 import CartDrawer from "@/components/CartDrawer";
 import ProductCard from "@/components/ProductCard";
 import Footer from "@/components/Footer";
+import CatalogPagination from "@/components/CatalogPagination";
+import { Skeleton } from "@/components/ui/skeleton";
 import { categories } from "@/data/products";
 import { useProducts } from "@/hooks/useProducts";
 
+const ITEMS_PER_PAGE = 8;
+
+const ProductSkeleton = () => (
+  <div className="space-y-4">
+    <Skeleton className="aspect-[3/4] w-full" />
+    <Skeleton className="h-4 w-3/4" />
+    <Skeleton className="h-4 w-1/2" />
+  </div>
+);
+
 const Catalog = () => {
   const { category: categorySlug, subcategory } = useParams();
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [sortBy, setSortBy] = useState("new");
 
   const filterType = searchParams.get("filter"); // "new" or "sale"
+  const currentPage = parseInt(searchParams.get("page") || "1", 10);
   const currentCategory = categories.find((c) => c.slug === categorySlug);
 
-  // Загружаем товары из API или локально
-  const { products, isLoading } = useProducts({
+  // Загружаем товары с пагинацией
+  const { products, total, isLoading } = useProducts({
     category: categorySlug,
     subcategory: subcategory,
     isNew: filterType === "new" ? true : undefined,
     isSale: filterType === "sale" ? true : undefined,
+    limit: ITEMS_PER_PAGE,
+    offset: (currentPage - 1) * ITEMS_PER_PAGE,
   });
 
-  const filteredProducts = useMemo(() => {
-    let filtered = [...products];
+  const totalPages = Math.ceil(total / ITEMS_PER_PAGE);
+
+  const sortedProducts = useMemo(() => {
+    let sorted = [...products];
 
     // Sort
     switch (sortBy) {
       case "price-low":
-        filtered.sort((a, b) => a.price - b.price);
+        sorted.sort((a, b) => a.price - b.price);
         break;
       case "price-high":
-        filtered.sort((a, b) => b.price - a.price);
+        sorted.sort((a, b) => b.price - a.price);
         break;
       case "new":
       default:
-        filtered.sort((a, b) => (b.isNew ? 1 : 0) - (a.isNew ? 1 : 0));
+        sorted.sort((a, b) => (b.isNew ? 1 : 0) - (a.isNew ? 1 : 0));
     }
 
-    return filtered;
+    return sorted;
   }, [products, sortBy]);
+
+  const handlePageChange = (page: number) => {
+    const newParams = new URLSearchParams(searchParams);
+    newParams.set("page", String(page));
+    setSearchParams(newParams);
+    // Scroll to top
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   // Get page title based on filter
   const getPageTitle = () => {
@@ -88,7 +113,7 @@ const Catalog = () => {
             </button>
 
             <span className="text-sm text-muted-foreground">
-              {isLoading ? "Загрузка..." : `${filteredProducts.length} товаров`}
+              {isLoading ? "Загрузка..." : `${total} товаров`}
             </span>
 
             <div className="relative group">
@@ -122,24 +147,34 @@ const Catalog = () => {
       <section className="py-12 md:py-20">
         <div className="container mx-auto">
           {isLoading ? (
-            <div className="flex items-center justify-center py-20">
-              <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
+            <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8">
+              {Array.from({ length: ITEMS_PER_PAGE }).map((_, i) => (
+                <ProductSkeleton key={i} />
+              ))}
             </div>
-          ) : filteredProducts.length > 0 ? (
-            <motion.div
-              layout
-              className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8"
-            >
-              <AnimatePresence>
-                {filteredProducts.map((product, index) => (
-                  <ProductCard
-                    key={product.id}
-                    product={product}
-                    index={index}
-                  />
-                ))}
-              </AnimatePresence>
-            </motion.div>
+          ) : sortedProducts.length > 0 ? (
+            <>
+              <motion.div
+                layout
+                className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8"
+              >
+                <AnimatePresence>
+                  {sortedProducts.map((product, index) => (
+                    <ProductCard
+                      key={product.id}
+                      product={product}
+                      index={index}
+                    />
+                  ))}
+                </AnimatePresence>
+              </motion.div>
+
+              <CatalogPagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={handlePageChange}
+              />
+            </>
           ) : (
             <motion.div
               initial={{ opacity: 0 }}

@@ -5,6 +5,7 @@ import { ArrowLeft, Minus, Plus, Check, Loader2 } from "lucide-react";
 import Header from "@/components/Header";
 import CartDrawer from "@/components/CartDrawer";
 import Footer from "@/components/Footer";
+import ProductGallery from "@/components/ProductGallery";
 import { useProduct } from "@/hooks/useProducts";
 import { useCartStore } from "@/store/cartStore";
 import { productColors, ProductColor, allSizes } from "@/types/product";
@@ -31,17 +32,24 @@ const ProductDetail = () => {
     }
     // Fallback: use product's single color if available
     if (product.color) {
-      return [{ color: product.color, image: product.image }];
+      return [{ color: product.color, image: product.image, images: [product.image] }];
     }
     return [];
   }, [product]);
 
-  // Current displayed image based on selected color
-  const currentImage = useMemo(() => {
-    if (colorVariants.length > 0 && colorVariants[selectedColorIndex]?.image) {
-      return colorVariants[selectedColorIndex].image;
+  // Get images for current selected color
+  const currentColorImages = useMemo(() => {
+    if (colorVariants.length > 0) {
+      const variant = colorVariants[selectedColorIndex];
+      // Prefer images array, fallback to single image
+      if (variant?.images && variant.images.length > 0) {
+        return variant.images;
+      }
+      if (variant?.image) {
+        return [variant.image];
+      }
     }
-    return product?.image || "";
+    return product?.image ? [product.image] : [];
   }, [product, colorVariants, selectedColorIndex]);
 
   // Related products - for now empty in API mode, we could fetch separately
@@ -157,26 +165,14 @@ const ProductDetail = () => {
               transition={{ duration: 0.6 }}
               className="relative"
             >
-              <div className="aspect-[3/4] overflow-hidden bg-secondary relative">
-                <AnimatePresence mode="wait">
-                  <motion.img
-                    key={currentImage}
-                    src={currentImage}
-                    alt={product.name}
-                    className="w-full h-full object-cover absolute inset-0"
-                    initial={{ opacity: 0, scale: 1.03 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.97 }}
-                    transition={{ 
-                      duration: 0.4, 
-                      ease: [0.4, 0, 0.2, 1]
-                    }}
-                  />
-                </AnimatePresence>
-              </div>
+              <ProductGallery 
+                images={currentColorImages} 
+                productName={product.name} 
+                resetKey={selectedColorIndex}
+              />
 
               {/* Badges */}
-              <div className="absolute top-6 left-6 flex flex-col gap-2">
+              <div className="absolute top-6 left-6 flex flex-col gap-2 z-20">
                 {product.isNew && (
                   <motion.span
                     initial={{ opacity: 0, x: -20 }}

@@ -1,9 +1,68 @@
 const express = require('express');
 const { v4: uuidv4 } = require('uuid');
+const path = require('path');
+const fs = require('fs');
 const { db } = require('../database/init');
 const { authenticateToken } = require('../middleware/auth');
 
 const router = express.Router();
+
+// Папка uploads
+const uploadDir = path.join(__dirname, '../../uploads');
+
+// Функция для извлечения имён файлов из URL изображений
+const extractFilenamesFromProduct = (product) => {
+  const filenames = [];
+  
+  // Основное изображение
+  if (product.image && product.image.startsWith('/uploads/')) {
+    filenames.push(product.image.replace('/uploads/', ''));
+  }
+  
+  // Изображения из colorVariants
+  if (product.color_variants) {
+    try {
+      const variants = typeof product.color_variants === 'string' 
+        ? JSON.parse(product.color_variants) 
+        : product.color_variants;
+      
+      variants.forEach(variant => {
+        // Legacy single image
+        if (variant.image && variant.image.startsWith('/uploads/')) {
+          filenames.push(variant.image.replace('/uploads/', ''));
+        }
+        // Multiple images
+        if (variant.images && Array.isArray(variant.images)) {
+          variant.images.forEach(img => {
+            if (img && img.startsWith('/uploads/')) {
+              filenames.push(img.replace('/uploads/', ''));
+            }
+          });
+        }
+      });
+    } catch (e) {
+      console.error('Error parsing color_variants:', e);
+    }
+  }
+  
+  return [...new Set(filenames)]; // Убираем дубликаты
+};
+
+// Функция для удаления файла
+const deleteFile = (filename) => {
+  const filePath = path.join(uploadDir, filename);
+  if (fs.existsSync(filePath)) {
+    try {
+      fs.unlinkSync(filePath);
+      console.log(`Deleted file: ${filename}`);
+      return true;
+    } catch (err) {
+      console.error(`Error deleting file ${filename}:`, err);
+      return false;
+    }
+  }
+  return false;
+};
 
 // GET /api/products - Получить все товары
 router.get('/', (req, res) => {
@@ -167,14 +226,28 @@ router.delete('/:id', authenticateToken, (req, res) => {
   try {
     const { id } = req.params;
 
-    const existing = db.prepare('SELECT id FROM products WHERE id = ?').get(id);
+    const existing = db.prepare('SELECT * FROM products WHERE id = ?').get(id);
     if (!existing) {
       return res.status(404).json({ error: 'Товар не найден' });
     }
 
+    // Извлекаем и удаляем все связанные файлы изображений
+    const filenames = extractFilenamesFromProduct(existing);
+    let deletedCount = 0;
+    filenames.forEach(filename => {
+      if (deleteFile(filename)) {
+        deletedCount++;
+      }
+    });
+
+    // Удаляем запись из базы
     db.prepare('DELETE FROM products WHERE id = ?').run(id);
 
-    res.json({ message: 'Товар удалён' });
+    console.log(`Product ${id} deleted with ${deletedCount}/${filenames.length} image files`);
+    res.json({ 
+      message: 'Товар удалён',
+      deletedImages: deletedCount 
+    });
   } catch (error) {
     console.error('Delete product error:', error);
     res.status(500).json({ error: 'Ошибка сервера' });

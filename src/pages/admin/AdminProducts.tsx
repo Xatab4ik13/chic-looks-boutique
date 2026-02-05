@@ -1,18 +1,14 @@
-import { useEffect, useState, useMemo, useRef } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   Plus, 
   Trash2, 
   Search, 
   Package, 
-  Tag, 
   Edit2, 
-  X,
   Check,
   AlertCircle,
-  Sparkles,
-  Upload,
-  Image as ImageIcon
+  Sparkles
 } from "lucide-react";
 import { useAdminProductStore, categories, skuPrefixes } from "@/store/adminProductStore";
 import { Product, productColors, ProductColor, ColorVariant, allSizes, ProductSize } from "@/types/product";
@@ -48,101 +44,14 @@ import {
 import { toast } from "sonner";
 import ColorVariantImages from "@/components/admin/ColorVariantImages";
 
-// Image Upload Component
-const ImageUploadField = ({ 
-  value, 
-  onChange, 
-  id 
-}: { 
-  value: string; 
-  onChange: (image: string) => void; 
-  id: string;
-}) => {
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const [isDragging, setIsDragging] = useState(false);
-
-  const handleFileChange = (file: File | null) => {
-    if (!file) return;
-    
-    if (!file.type.startsWith('image/')) {
-      toast.error("Выберите файл изображения");
-      return;
-    }
-
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const result = e.target?.result as string;
-      onChange(result);
-    };
-    reader.readAsDataURL(file);
-  };
-
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(false);
-    const file = e.dataTransfer.files[0];
-    handleFileChange(file);
-  };
-
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(true);
-  };
-
-  const handleDragLeave = () => {
-    setIsDragging(false);
-  };
-
-  return (
-    <div className="space-y-2">
-      <Label htmlFor={id}>Основное изображение</Label>
-      
-      {value && (
-        <div className="relative w-full aspect-[3/4] max-w-[200px] rounded-lg overflow-hidden border border-border bg-muted">
-          <img src={value} alt="Preview" className="w-full h-full object-cover" />
-          <button
-            type="button"
-            onClick={() => onChange("")}
-            className="absolute top-2 right-2 p-1 rounded-full bg-background/80 hover:bg-background transition-colors"
-          >
-            <X className="w-4 h-4" />
-          </button>
-        </div>
-      )}
-
-      {!value && (
-        <div
-          onDrop={handleDrop}
-          onDragOver={handleDragOver}
-          onDragLeave={handleDragLeave}
-          onClick={() => fileInputRef.current?.click()}
-          className={`
-            relative border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-colors
-            ${isDragging ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/50 hover:bg-muted/50'}
-          `}
-        >
-          <div className="flex flex-col items-center gap-2">
-            <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center">
-              <Upload className="w-6 h-6 text-muted-foreground" />
-            </div>
-            <div>
-              <p className="font-medium text-sm">Загрузить изображение</p>
-              <p className="text-xs text-muted-foreground">Перетащите или нажмите</p>
-            </div>
-          </div>
-        </div>
-      )}
-
-      <input
-        ref={fileInputRef}
-        type="file"
-        accept="image/*"
-        onChange={(e) => handleFileChange(e.target.files?.[0] || null)}
-        className="hidden"
-        id={id}
-      />
-    </div>
-  );
+// Helper to get main image from color variants
+const getMainImageFromVariants = (colorVariants: ColorVariant[]): string => {
+  if (colorVariants.length === 0) return "";
+  const firstVariant = colorVariants[0];
+  if (firstVariant.images && firstVariant.images.length > 0) {
+    return firstVariant.images[0];
+  }
+  return firstVariant.image || "";
 };
 
 const AdminProducts = () => {
@@ -160,7 +69,7 @@ const AdminProducts = () => {
   const [deleteProductId, setDeleteProductId] = useState<string | null>(null);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   
-  // Form state
+  // Form state (image is now derived from colorVariants)
   const [formData, setFormData] = useState({
     name: "",
     sku: "",
@@ -168,7 +77,6 @@ const AdminProducts = () => {
     oldPrice: "",
     category: "",
     subcategory: "",
-    image: "",
     composition: "",
     colorVariants: [] as ColorVariant[],
     availableSizes: [] as ProductSize[],
@@ -223,7 +131,6 @@ const AdminProducts = () => {
       oldPrice: "",
       category: "",
       subcategory: "",
-      image: "",
       composition: "",
       colorVariants: [],
       availableSizes: [],
@@ -276,7 +183,6 @@ const AdminProducts = () => {
       oldPrice: product.oldPrice ? String(product.oldPrice) : "",
       category: product.category,
       subcategory: product.subcategory || "",
-      image: product.image,
       composition: product.composition || "",
       colorVariants: product.colorVariants || [],
       availableSizes: product.availableSizes || [],
@@ -293,6 +199,17 @@ const AdminProducts = () => {
       return;
     }
 
+    if (formData.colorVariants.length === 0) {
+      toast.error("Добавьте хотя бы один цвет товара");
+      return;
+    }
+
+    const mainImage = getMainImageFromVariants(formData.colorVariants);
+    if (!mainImage) {
+      toast.error("Загрузите хотя бы одно фото для первого цвета");
+      return;
+    }
+
     // Check if SKU already exists
     if (products.some(p => p.sku === formData.sku)) {
       toast.error("Товар с таким артикулом уже существует");
@@ -306,10 +223,10 @@ const AdminProducts = () => {
       oldPrice: formData.oldPrice ? Number(formData.oldPrice) : undefined,
       category: formData.category,
       subcategory: formData.subcategory || undefined,
-      image: formData.image || "/placeholder.svg",
+      image: mainImage,
       composition: formData.composition || undefined,
-      colorVariants: formData.colorVariants.length > 0 ? formData.colorVariants : undefined,
-      color: formData.colorVariants.length > 0 ? formData.colorVariants[0].color : undefined,
+      colorVariants: formData.colorVariants,
+      color: formData.colorVariants[0].color,
       availableSizes: formData.availableSizes.length > 0 ? formData.availableSizes : undefined,
       isNew: formData.isNew,
       isSale: formData.isSale,
@@ -329,6 +246,17 @@ const AdminProducts = () => {
       return;
     }
 
+    if (formData.colorVariants.length === 0) {
+      toast.error("Добавьте хотя бы один цвет товара");
+      return;
+    }
+
+    const mainImage = getMainImageFromVariants(formData.colorVariants);
+    if (!mainImage) {
+      toast.error("Загрузите хотя бы одно фото для первого цвета");
+      return;
+    }
+
     // Check if SKU already exists (excluding current product)
     if (products.some(p => p.sku === formData.sku && p.id !== editingProduct.id)) {
       toast.error("Товар с таким артикулом уже существует");
@@ -342,10 +270,10 @@ const AdminProducts = () => {
       oldPrice: formData.oldPrice ? Number(formData.oldPrice) : undefined,
       category: formData.category,
       subcategory: formData.subcategory || undefined,
-      image: formData.image,
+      image: mainImage,
       composition: formData.composition || undefined,
-      colorVariants: formData.colorVariants.length > 0 ? formData.colorVariants : undefined,
-      color: formData.colorVariants.length > 0 ? formData.colorVariants[0].color : undefined,
+      colorVariants: formData.colorVariants,
+      color: formData.colorVariants[0].color,
       availableSizes: formData.availableSizes.length > 0 ? formData.availableSizes : undefined,
       isNew: formData.isNew,
       isSale: formData.isSale,
@@ -659,12 +587,6 @@ const AdminProducts = () => {
               </div>
             </div>
 
-            {/* Image Upload */}
-            <ImageUploadField
-              value={formData.image}
-              onChange={(image) => setFormData(prev => ({ ...prev, image }))}
-              id="image"
-            />
 
             {/* Composition */}
             <div className="space-y-2">
@@ -885,12 +807,6 @@ const AdminProducts = () => {
               </div>
             </div>
 
-            {/* Image Upload */}
-            <ImageUploadField
-              value={formData.image}
-              onChange={(image) => setFormData(prev => ({ ...prev, image }))}
-              id="edit-image"
-            />
 
             {/* Composition */}
             <div className="space-y-2">

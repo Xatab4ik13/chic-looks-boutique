@@ -31,14 +31,14 @@ const Returns = () => {
                 <div className="space-y-4 text-muted-foreground">
                   <p>
                     Мы понимаем, что иногда размер или фасон могут не подойти. 
-                    Вы можете обменять товар в течение 14 дней с момента получения.
+                    Вы можете обменять товар в течение 7 дней с момента получения.
                   </p>
                   
                   <div className="p-6 bg-secondary rounded-lg space-y-3">
                     <h3 className="font-medium text-foreground">Условия обмена:</h3>
                     <ul className="list-disc list-inside space-y-2">
                       <li>Товар не был в носке и сохранил товарный вид</li>
-                      <li>Все бирки и ярлыки сохранены</li>
+                      <li>Все бирки, пломбы и ярлыки сохранены</li>
                       <li>Сохранена оригинальная упаковка</li>
                       <li>Есть чек или подтверждение покупки</li>
                     </ul>
@@ -54,7 +54,7 @@ const Returns = () => {
                 
                 <div className="space-y-4 text-muted-foreground">
                   <p>
-                    Возврат денежных средств осуществляется в течение 14 дней 
+                    Возврат денежных средств осуществляется в течение 3 рабочих дней 
                     с момента получения товара обратно.
                   </p>
                   
@@ -97,33 +97,33 @@ const Returns = () => {
                     <tbody className="text-muted-foreground">
                       <tr className="border-b border-border">
                         <td className="py-3 px-4 font-medium text-foreground">XS</td>
-                        <td className="py-3 px-4">82-86</td>
-                        <td className="py-3 px-4">62-66</td>
-                        <td className="py-3 px-4">88-92</td>
+                        <td className="py-3 px-4">84-86</td>
+                        <td className="py-3 px-4">58-60</td>
+                        <td className="py-3 px-4">86-88</td>
                       </tr>
                       <tr className="border-b border-border">
                         <td className="py-3 px-4 font-medium text-foreground">S</td>
-                        <td className="py-3 px-4">86-90</td>
-                        <td className="py-3 px-4">66-70</td>
-                        <td className="py-3 px-4">92-96</td>
+                        <td className="py-3 px-4">88-90</td>
+                        <td className="py-3 px-4">62-64</td>
+                        <td className="py-3 px-4">90-94</td>
                       </tr>
                       <tr className="border-b border-border">
                         <td className="py-3 px-4 font-medium text-foreground">M</td>
-                        <td className="py-3 px-4">90-94</td>
-                        <td className="py-3 px-4">70-74</td>
-                        <td className="py-3 px-4">96-100</td>
+                        <td className="py-3 px-4">92-94</td>
+                        <td className="py-3 px-4">66-68</td>
+                        <td className="py-3 px-4">94-96</td>
                       </tr>
                       <tr className="border-b border-border">
                         <td className="py-3 px-4 font-medium text-foreground">L</td>
-                        <td className="py-3 px-4">94-98</td>
-                        <td className="py-3 px-4">74-78</td>
-                        <td className="py-3 px-4">100-104</td>
+                        <td className="py-3 px-4">96-98</td>
+                        <td className="py-3 px-4">70-72</td>
+                        <td className="py-3 px-4">98-100</td>
                       </tr>
                       <tr>
                         <td className="py-3 px-4 font-medium text-foreground">XL</td>
-                        <td className="py-3 px-4">98-102</td>
-                        <td className="py-3 px-4">78-82</td>
-                        <td className="py-3 px-4">104-108</td>
+                        <td className="py-3 px-4">98-100</td>
+                        <td className="py-3 px-4">74-76</td>
+                        <td className="py-3 px-4">102-104</td>
                       </tr>
                     </tbody>
                   </table>

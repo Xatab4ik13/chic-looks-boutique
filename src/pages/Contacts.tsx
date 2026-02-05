@@ -66,7 +66,7 @@ const Contacts = () => {
                 Trend Island
               </p>
               <p className="text-muted-foreground">
-                ТРЦ Европейский, ТРЦ Авиапарк
+                ТРЦ Европейский, ТРЦ Авиапарк — Москва
               </p>
             </div>
 

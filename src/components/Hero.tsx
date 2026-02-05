@@ -1,18 +1,12 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { Skeleton } from "@/components/ui/skeleton";
-import heroMain from "@/assets/hero-main.jpg";
-import heroSlide2 from "@/assets/hero-slide-2.jpg";
-import heroSlide3 from "@/assets/hero-slide-3.jpg";
 
-// Preload images
-const preloadImages = (sources: string[]) => {
-  sources.forEach((src) => {
-    const img = new Image();
-    img.src = src;
-  });
-};
+// Use public folder paths for instant preloading via index.html
+const heroMain = "/images/hero-main.jpg";
+const heroSlide2 = "/images/hero-slide-2.jpg";
+const heroSlide3 = "/images/hero-slide-3.jpg";
 
 const HeroImage = ({ 
   src, 
@@ -28,15 +22,6 @@ const HeroImage = ({
   const [isLoaded, setIsLoaded] = useState(false);
   const [hasError, setHasError] = useState(false);
 
-  useEffect(() => {
-    if (priority) {
-      const img = new Image();
-      img.src = src;
-      img.onload = () => setIsLoaded(true);
-      img.onerror = () => setHasError(true);
-    }
-  }, [src, priority]);
-
   return (
     <div className="relative w-full h-full">
       {!isLoaded && !hasError && (
@@ -45,12 +30,13 @@ const HeroImage = ({
       <img
         src={src}
         alt={alt}
-        className={`w-full h-full object-cover transition-opacity duration-500 ${
+        className={`w-full h-full object-cover transition-opacity duration-300 ${
           isLoaded ? "opacity-100" : "opacity-0"
         } ${className}`}
         onLoad={() => setIsLoaded(true)}
         onError={() => setHasError(true)}
         loading={priority ? "eager" : "lazy"}
+        fetchPriority={priority ? "high" : "auto"}
         decoding="async"
       />
     </div>
@@ -58,11 +44,6 @@ const HeroImage = ({
 };
 
 const Hero = () => {
-  // Preload all hero images on mount
-  useEffect(() => {
-    preloadImages([heroMain, heroSlide2, heroSlide3]);
-  }, []);
-
   return (
     <section>
       {/* Main Hero Banner - Full screen */}

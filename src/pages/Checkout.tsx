@@ -201,7 +201,7 @@ const Checkout = () => {
                     Есть вопросы по заказу? Свяжитесь с нами напрямую
                   </p>
                   <a
-                    href="https://wa.me/79"
+                    href="https://wa.me/79181349493"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 px-6 py-3 bg-[#25D366] text-white rounded-lg hover:bg-[#22c55e] transition-colors"

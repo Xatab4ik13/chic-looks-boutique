@@ -1,18 +1,76 @@
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
+import { Skeleton } from "@/components/ui/skeleton";
 import heroMain from "@/assets/hero-main.jpg";
 import heroSlide2 from "@/assets/hero-slide-2.jpg";
 import heroSlide3 from "@/assets/hero-slide-3.jpg";
 
+// Preload images
+const preloadImages = (sources: string[]) => {
+  sources.forEach((src) => {
+    const img = new Image();
+    img.src = src;
+  });
+};
+
+const HeroImage = ({ 
+  src, 
+  alt, 
+  priority = false,
+  className = ""
+}: { 
+  src: string; 
+  alt: string; 
+  priority?: boolean;
+  className?: string;
+}) => {
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [hasError, setHasError] = useState(false);
+
+  useEffect(() => {
+    if (priority) {
+      const img = new Image();
+      img.src = src;
+      img.onload = () => setIsLoaded(true);
+      img.onerror = () => setHasError(true);
+    }
+  }, [src, priority]);
+
+  return (
+    <div className="relative w-full h-full">
+      {!isLoaded && !hasError && (
+        <Skeleton className="absolute inset-0 w-full h-full rounded-none" />
+      )}
+      <img
+        src={src}
+        alt={alt}
+        className={`w-full h-full object-cover transition-opacity duration-500 ${
+          isLoaded ? "opacity-100" : "opacity-0"
+        } ${className}`}
+        onLoad={() => setIsLoaded(true)}
+        onError={() => setHasError(true)}
+        loading={priority ? "eager" : "lazy"}
+        decoding="async"
+      />
+    </div>
+  );
+};
+
 const Hero = () => {
+  // Preload all hero images on mount
+  useEffect(() => {
+    preloadImages([heroMain, heroSlide2, heroSlide3]);
+  }, []);
+
   return (
     <section>
       {/* Main Hero Banner - Full screen */}
       <Link to="/catalog?filter=new" className="block relative h-screen overflow-hidden group">
-        <img
+        <HeroImage
           src={heroMain}
           alt="Новая коллекция"
-          className="w-full h-full object-cover"
+          priority
         />
         <div className="absolute inset-0 bg-gradient-to-t from-foreground/40 via-transparent to-transparent" />
         
@@ -40,10 +98,10 @@ const Hero = () => {
               transition={{ duration: 0.6 }}
               className="h-full"
             >
-              <img
+              <HeroImage
                 src={heroSlide2}
                 alt="Каталог"
-                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                className="transition-transform duration-700 group-hover:scale-105"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-foreground/50 via-transparent to-transparent" />
               <div className="absolute inset-0 flex items-end justify-center pb-8 md:pb-12">
@@ -63,10 +121,10 @@ const Hero = () => {
               transition={{ duration: 0.6, delay: 0.1 }}
               className="h-full"
             >
-              <img
+              <HeroImage
                 src={heroSlide3}
                 alt="Скидки"
-                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                className="transition-transform duration-700 group-hover:scale-105"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-foreground/50 via-transparent to-transparent" />
               <div className="absolute inset-0 flex items-end justify-center pb-8 md:pb-12">

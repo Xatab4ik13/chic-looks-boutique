@@ -184,12 +184,7 @@ async function sendTelegramNotification(order) {
 🛍 *Новый заказ!*
 
 👤 *Клиент:* ${escapeMarkdown(order.name)}
-📱 *Телефон:* ${escapeMarkdown(order.phone)}
-
-📍 *Доставка:*
-Город: ${escapeMarkdown(order.city || 'Не указан')}
-Пункт: ${escapeMarkdown(order.pickupPoint || 'Не указан')}
-Адрес: ${escapeMarkdown(order.pickupAddress || 'Не указан')}
+📱 *Телефон:* ${order.phone}
 
 📦 *Состав заказа:*
 ${itemsList}
